@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OkuBit – Öğretmen Paneli</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#f4f6f9;color:#1e293b;display:flex;min-height:100vh}
+.sidebar{width:240px;background:#0a1628;min-height:100vh;padding:1.5rem 0;position:fixed;top:0;left:0;z-index:100}
+.sidebar-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;padding:0 1.5rem;margin-bottom:0.3rem}
+.sidebar-logo span{color:#60a5fa}
+.sidebar-alt{font-size:0.72rem;color:rgba(255,255,255,0.4);padding:0 1.5rem;margin-bottom:2rem;text-transform:uppercase;letter-spacing:0.5px}
+.sidebar-menu{list-style:none}
+.sidebar-menu li a{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.88rem;transition:all 0.2s}
+.sidebar-menu li a:hover{background:rgba(255,255,255,0.08);color:white}
+.sidebar-menu li a.aktif{background:rgba(96,165,250,0.15);color:#60a5fa;border-right:3px solid #60a5fa}
+.sidebar-menu li a .ikon{font-size:1rem;width:20px}
+.icerik{margin-left:240px;flex:1;padding:2rem 2.5rem}
+.ust-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.ust-bar h1{font-family:'Playfair Display',serif;font-size:1.6rem;color:#0a1628}
+.ust-bar p{color:#64748b;font-size:0.88rem;margin-top:0.2rem}
+.yeni-btn{background:#0a1628;color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.ozet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.ozet-kart{background:white;border-radius:14px;padding:1.3rem 1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.ozet-label{font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem}
+.ozet-deger{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#0a1628}
+.ozet-alt{font-size:0.75rem;margin-top:0.2rem;color:#2563a8}
+.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.kart{background:white;border-radius:16px;padding:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.kart-ust{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+.kart-baslik{font-size:0.85rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:0.75rem 1rem;font-size:0.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1.5px solid #f1f5f9}
+td{padding:0.85rem 1rem;font-size:0.88rem;border-bottom:1px solid #f8fafc}
+tr:hover td{background:#f8fafc}
+.durum{display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.7rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.durum.aktif{background:#f0fdf4;color:#16a34a}
+.durum.pasif{background:#fef2f2;color:#dc2626}
+.durum.bekliyor{background:#fffbeb;color:#d97706}
+.asama-badge{display:inline-block;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.asama-badge.a1{background:#eff6ff;color:#1d4ed8}
+.asama-badge.a2{background:#f0fdf4;color:#15803d}
+.asama-badge.a3{background:#fefce8;color:#b45309}
+.asama-badge.a4{background:#fdf4ff;color:#7e22ce}
+.islem-btn{padding:0.3rem 0.7rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;margin-right:4px}
+.islem-btn.goster{background:#eff6ff;color:#2563a8}
+.islem-btn.gorev{background:#f0fdf4;color:#16a34a}
+.ilerleme-bar{background:#f1f5f9;border-radius:10px;height:6px;overflow:hidden;margin-top:4px}
+.ilerleme-dolu{height:100%;background:linear-gradient(90deg,#2563a8,#60a5fa);border-radius:10px}
+.egzersiz-liste{display:flex;flex-direction:column;gap:0.75rem}
+.egzersiz-item{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:#f8fafc;border-radius:10px;font-size:0.88rem}
+.egzersiz-isim{font-weight:500;color:#1e293b}
+.egzersiz-asama{font-size:0.75rem;color:#64748b}
+.baslat-btn{background:#0a1628;color:white;border:none;padding:0.4rem 0.9rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.baslat-btn:hover{background:#1a3a6b}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
+.modal.acik{display:flex}
+.modal-kutu{background:white;border-radius:20px;padding:2rem;width:520px;max-width:90%}
+.modal-baslik{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#0a1628;margin-bottom:1.5rem}
+.form-grup{margin-bottom:1rem}
+.form-grup label{display:block;font-size:0.82rem;font-weight:600;color:#1e293b;margin-bottom:0.4rem}
+.form-grup select,.form-grup input{width:100%;padding:0.7rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:'DM Sans',sans-serif;outline:none}
+.form-grup select:focus,.form-grup input:focus{border-color:#2563a8}
+.modal-btn-grup{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
+.btn-iptal{background:#f1f5f9;color:#64748b;border:none;padding:0.7rem 1.4rem;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-kaydet{background:#0a1628;color:white;border:none;padding:0.7rem 1.4rem;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.sekme-grup{display:flex;gap:0.5rem;margin-bottom:1.2rem}
+.sekme{padding:0.5rem 1rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:white;color:#64748b;font-family:'DM Sans',sans-serif}
+.sekme.aktif-sekme{background:#0a1628;color:white;border-color:#0a1628}
+@media(max-width:1024px){.ozet-grid{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{display:none}.icerik{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-logo">Oku<span>Bit</span></div>
+  <div class="sidebar-alt">Öğretmen Paneli</div>
+  <ul class="sidebar-menu">
+    <li><a href="#" class="aktif"><span class="ikon">📊</span> Genel Bakış</a></li>
+    <li><a href="#"><span class="ikon">👥</span> Öğrencilerim</a></li>
+    <li><a href="#"><span class="ikon">🌌</span> Egzersiz Yap</a></li>
+    <li><a href="#"><span class="ikon">📚</span> Hikâye Seç</a></li>
+    <li><a href="#"><span class="ikon">📋</span> Görev Ata</a></li>
+    <li><a href="#"><span class="ikon">📈</span> Raporlar</a></li>
+    <li><a href="index.html"><span class="ikon">🌐</span> Siteye Dön</a></li>
+  </ul>
+</div>
+<div class="icerik">
+  <div class="ust-bar">
+    <div>
+      <h1>Öğretmen Paneli</h1>
+      <p>Hoş geldiniz! Öğrencilerinizin durumu aşağıda.</p>
+    </div>
+    <button class="yeni-btn" onclick="modalAc()">+ Görev Ata</button>
+  </div>
+  <div class="ozet-grid">
+    <div class="ozet-kart"><div class="ozet-label">Öğrencilerim</div><div class="ozet-deger">12</div><div class="ozet-alt">Kayıtlı öğrenci</div></div>
+    <div class="ozet-kart"><div class="ozet-label">Bugün Çalışan</div><div class="ozet-deger">7</div><div class="ozet-alt">%58 aktif bugün</div></div>
+    <div class="ozet-kart"><div class="ozet-label">Ort. Enerji</div><div class="ozet-deger">⚡284</div><div class="ozet-alt">+18 bu hafta</div></div>
+    <div class="ozet-kart"><div class="ozet-label">Dikkat Gereken</div><div class="ozet-deger">2</div><div class="ozet-alt" style="color:#d97706">3+ gün giriş yok</div></div>
+  </div>
+  <div class="grid2">
+    <div class="kart">
+      <div class="kart-ust">
+        <span class="kart-baslik">👥 Öğrencilerim</span>
+        <div class="sekme-grup">
+          <button class="sekme aktif-sekme">Tümü</button>
+          <button class="sekme">Aktif</button>
+          <button class="sekme">Dikkat</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Ad Soyad</th><th>Aşama</th><th>İlerleme</th><th>Enerji</th><th>Durum</th><th>İşlem</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Zeynep Kaya</td><td><span class="asama-badge a2">2. Aşama</span></td><td><div style="font-size:0.75rem;color:#64748b">14/30 gün</div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:47%"></div></div></td><td>⚡ 412</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn goster">Detay</button><button class="islem-btn gorev">Görev</button></td></tr>
+          <tr><td>Mehmet Arslan</td><td><span class="asama-badge a2">2. Aşama</span></td><td><div style="font-size:0.75rem;color:#64748b">12/30 gün</div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:40%"></div></div></td><td>⚡ 389</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn goster">Detay</button><button class="islem-btn gorev">Görev</button></td></tr>
+          <tr><td>Elif Şahin</td><td><span class="asama-badge a3">3. Aşama</span></td><td><div style="font-size:0.75rem;color:#64748b">8/30 gün</div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:27%"></div></div></td><td>⚡ 301</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn goster">Detay</button><button class="islem-btn gorev">Görev</button></td></tr>
+          <tr><td>Ali Demir</td><td><span class="asama-badge a2">2. Aşama</span></td><td><div style="font-size:0.75rem;color:#64748b">7/30 gün</div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:23%"></div></div></td><td>⚡ 248</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn goster">Detay</button><button class="islem-btn gorev">Görev</button></td></tr>
+          <tr><td>Ayşe Tekin</td><td><span class="asama-badge a1">1. Aşama</span></td><td><div style="font-size:0.75rem;color:#64748b">21/30 gün</div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:70%"></div></div></td><td>⚡ 201</td><td><span class="durum bekliyor">● 3 gün yok</span></td><td><button class="islem-btn goster">Detay</button><button class="islem-btn gorev">Görev</button></td></tr>
+          <tr><td>Can Yıldız</td><td><span class="asama-badge a4">4. Aşama</span></td><td><div style="font-size:0.75rem;color:#64748b">3/30 gün</div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:10%"></div></div></td><td>⚡ 89</td><td><span class="durum pasif">● 5 gün yok</span></td><td><button class="islem-btn goster">Detay</button><button class="islem-btn gorev">Görev</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.5rem">
+      <div class="kart">
+        <div class="kart-baslik" style="margin-bottom:1.2rem">🌌 Serbest Egzersiz</div>
+        <p style="font-size:0.85rem;color:#64748b;margin-bottom:1rem">İstediğiniz egzersizi başlatın</p>
+        <div class="egzersiz-liste">
+          <div class="egzersiz-item"><div><div class="egzersiz-isim">☄️ Meteor Takibi</div><div class="egzersiz-asama">Tüm aşamalar</div></div><button class="baslat-btn" onclick="alert('Yakında aktif!')">Başlat</button></div>
+          <div class="egzersiz-item"><div><div class="egzersiz-isim">🌌 Galaksi Tarama</div><div class="egzersiz-asama">2-3-4. Aşama</div></div><button class="baslat-btn" onclick="alert('Yakında aktif!')">Başlat</button></div>
+          <div class="egzersiz-item"><div><div class="egzersiz-isim">⚡ Kelime Akışı</div><div class="egzersiz-asama">3-4. Aşama</div></div><button class="baslat-btn" onclick="alert('Yakında aktif!')">Başlat</button></div>
+          <div class="egzersiz-item"><div><div class="egzersiz-isim">📚 Hikâye Seç</div><div class="egzersiz-asama">Tüm aşamalar</div></div><button class="baslat-btn" onclick="alert('Yakında aktif!')">Seç</button></div>
+        </div>
+      </div>
+      <div class="kart">
+        <div class="kart-baslik" style="margin-bottom:1rem">📊 Hızlı İstatistik</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px"><span>Bugün çalışma</span><span style="font-weight:600;color:#2563a8">7/12</span></div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:58%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px"><span>Bu hafta düzenlilik</span><span style="font-weight:600;color:#2563a8">%72</span></div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:72%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px"><span>Ortalama anlama</span><span style="font-weight:600;color:#16a34a">%81</span></div><div class="ilerleme-bar"><div class="ilerleme-dolu" style="width:81%"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal">
+  <div class="modal-kutu">
+    <div class="modal-baslik">📋 Öğrenciye Görev Ata</div>
+    <div class="form-grup"><label>Öğrenci Seç</label><select><option>Zeynep Kaya</option><option>Mehmet Arslan</option><option>Elif Şahin</option><option>Ali Demir</option><option>Ayşe Tekin</option><option>Can Yıldız</option><option>Tüm Öğrenciler</option></select></div>
+    <div class="form-grup"><label>Görev Türü</label><select><option>Ekstra Meteor Takibi</option><option>Ekstra Okuma Hikâyesi</option><option>Galaksi Tarama</option><option>Dikkat Testi</option><option>Serbest Okuma</option></select></div>
+    <div class="form-grup"><label>Açıklama (opsiyonel)</label><input type="text" placeholder="Öğrenciye not ekle..."></div>
+    <div class="modal-btn-grup">
+      <button class="btn-iptal" onclick="modalKapat()">İptal</button>
+      <button class="btn-kaydet" onclick="alert('Görev atandı! Yakında aktif olacak.')">Görevi Ata</button>
+    </div>
+  </div>
+</div>
+<script>
+function modalAc(){document.getElementById('modal').classList.add('acik')}
+function modalKapat(){document.getElementById('modal').classList.remove('acik')}
+</script>
+</body>
+</html>
