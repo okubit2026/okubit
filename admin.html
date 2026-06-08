@@ -46,6 +46,7 @@ tr:hover td{background:#f8fafc}
 .islem-btn{padding:0.3rem 0.7rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all 0.2s}
 .islem-btn.duzenle{background:#eff6ff;color:#2563a8}
 .islem-btn.uzat{background:#f0fdf4;color:#16a34a}
+.islem-btn.sil{background:#fef2f2;color:#dc2626}
 .asama-badge{display:inline-block;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600}
 .asama-badge.a1{background:#eff6ff;color:#1d4ed8}
 .asama-badge.a2{background:#f0fdf4;color:#15803d}
@@ -54,15 +55,31 @@ tr:hover td{background:#f8fafc}
 .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
 .modal.acik{display:flex}
 .modal-kutu{background:white;border-radius:20px;padding:2rem;width:480px;max-width:90%}
+.modal-kutu.genis{width:680px}
 .modal-baslik{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#0a1628;margin-bottom:1.5rem}
 .form-grup{margin-bottom:1rem}
 .form-grup label{display:block;font-size:0.82rem;font-weight:600;color:#1e293b;margin-bottom:0.4rem}
-.form-grup input,.form-grup select{width:100%;padding:0.7rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:'DM Sans',sans-serif;outline:none}
-.form-grup input:focus,.form-grup select:focus{border-color:#2563a8}
+.form-grup input,.form-grup select,.form-grup textarea{width:100%;padding:0.7rem 1rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:'DM Sans',sans-serif;outline:none}
+.form-grup input:focus,.form-grup select:focus,.form-grup textarea:focus{border-color:#2563a8}
+.form-grup textarea{resize:vertical;min-height:160px;line-height:1.7}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
 .modal-btn-grup{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
 .btn-iptal{background:#f1f5f9;color:#64748b;border:none;padding:0.7rem 1.4rem;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-kaydet{background:#0a1628;color:white;border:none;padding:0.7rem 1.4rem;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.sayac{font-size:0.78rem;color:#64748b;text-align:right;margin-top:0.3rem}
+.bildirim{position:fixed;top:1.5rem;right:1.5rem;padding:0.9rem 1.5rem;border-radius:10px;font-size:0.88rem;font-weight:600;z-index:999;display:none;animation:fadeIn 0.3s}
+.bildirim.basari{background:#f0fdf4;color:#16a34a;border:1.5px solid #bbf7d0}
+.bildirim.hata{background:#fef2f2;color:#dc2626;border:1.5px solid #fecaca}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.yukluyor{opacity:0.6;pointer-events:none}
+.bos-durum{text-align:center;padding:3rem;color:#94a3b8;font-size:0.9rem}
+.metin-onizleme{background:#f8fafc;border-radius:8px;padding:1rem;font-size:0.85rem;line-height:1.7;color:#475569;max-height:120px;overflow:hidden;text-overflow:ellipsis}
+.sekme-grup{display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:2px solid #f1f5f9;padding-bottom:0}
+.sekme{padding:0.6rem 1.2rem;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+.sekme.aktif{color:#0a1628;border-bottom-color:#0a1628}
+.sayfa{display:none}
+.sayfa.aktif{display:block}
 @media(max-width:768px){.sidebar{display:none}.icerik{margin-left:0}.ozet-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -71,12 +88,12 @@ tr:hover td{background:#f8fafc}
   <div class="sidebar-logo">Oku<span>Bit</span></div>
   <div class="sidebar-alt">Yönetici Paneli</div>
   <ul class="sidebar-menu">
-    <li><a href="#" class="aktif"><span class="ikon">📊</span> Genel Bakış</a></li>
-    <li><a href="#"><span class="ikon">👥</span> Öğrenciler</a></li>
+    <li><a href="#" class="aktif" onclick="sayfaGoster('genel',this)"><span class="ikon">📊</span> Genel Bakış</a></li>
+    <li><a href="#" onclick="sayfaGoster('ogrenciler',this)"><span class="ikon">👥</span> Öğrenciler</a></li>
     <li><a href="#"><span class="ikon">👨‍🏫</span> Öğretmenler</a></li>
     <li><a href="#"><span class="ikon">🏫</span> Kurumlar</a></li>
     <div class="sidebar-alt2">İçerik</div>
-    <li><a href="#"><span class="ikon">📚</span> Hikâyeler</a></li>
+    <li><a href="#" onclick="sayfaGoster('hikayeler',this)"><span class="ikon">📚</span> Hikâyeler</a></li>
     <li><a href="#"><span class="ikon">🌌</span> Egzersizler</a></li>
     <div class="sidebar-alt2">Sistem</div>
     <li><a href="#"><span class="ikon">💳</span> Ödemeler</a></li>
@@ -84,43 +101,103 @@ tr:hover td{background:#f8fafc}
     <li><a href="index.html"><span class="ikon">🌐</span> Siteye Dön</a></li>
   </ul>
 </div>
+
 <div class="icerik">
-  <div class="ust-bar">
-    <div>
-      <h1>Genel Bakış</h1>
-      <p>Hoş geldiniz! Platform durumunuz aşağıda.</p>
+
+  <!-- GENEL BAKIŞ SAYFASI -->
+  <div id="sayfa-genel" class="sayfa aktif">
+    <div class="ust-bar">
+      <div><h1>Genel Bakış</h1><p>Hoş geldiniz! Platform durumunuz aşağıda.</p></div>
+      <button class="yeni-btn" onclick="modalAc('ogrenci')">+ Yeni Öğrenci Ekle</button>
     </div>
-    <button class="yeni-btn" onclick="modalAc()">+ Yeni Öğrenci Ekle</button>
-  </div>
-  <div class="ozet-grid">
-    <div class="ozet-kart"><div class="ozet-label">Toplam Öğrenci</div><div class="ozet-deger">24</div><div class="ozet-alt mavi">+3 bu ay</div></div>
-    <div class="ozet-kart"><div class="ozet-label">Aktif Hesap</div><div class="ozet-deger">18</div><div class="ozet-alt yesil">%75 aktif</div></div>
-    <div class="ozet-kart"><div class="ozet-label">Bugün Giriş</div><div class="ozet-deger">7</div><div class="ozet-alt mavi">Çalışma yapıldı</div></div>
-    <div class="ozet-kart"><div class="ozet-label">Süresi Bitenler</div><div class="ozet-deger">3</div><div class="ozet-alt" style="color:#d97706">Yenileme gerekli</div></div>
-  </div>
-  <div class="kart">
-    <div class="kart-ust">
-      <span class="kart-baslik">👥 Öğrenci Listesi</span>
-      <input class="ara-input" type="text" placeholder="🔍 Öğrenci ara..." oninput="ara(this.value)">
+    <div class="ozet-grid">
+      <div class="ozet-kart"><div class="ozet-label">Toplam Öğrenci</div><div class="ozet-deger">24</div><div class="ozet-alt mavi">+3 bu ay</div></div>
+      <div class="ozet-kart"><div class="ozet-label">Aktif Hesap</div><div class="ozet-deger">18</div><div class="ozet-alt yesil">%75 aktif</div></div>
+      <div class="ozet-kart"><div class="ozet-label">Bugün Giriş</div><div class="ozet-deger">7</div><div class="ozet-alt mavi">Çalışma yapıldı</div></div>
+      <div class="ozet-kart"><div class="ozet-label">Süresi Bitenler</div><div class="ozet-deger">3</div><div class="ozet-alt" style="color:#d97706">Yenileme gerekli</div></div>
     </div>
-    <table id="tablo">
-      <thead>
-        <tr>
-          <th>Ad Soyad</th><th>Kullanıcı Adı</th><th>Aşama</th><th>Gün</th><th>Enerji</th><th>Lisans Bitiş</th><th>Durum</th><th>İşlem</th>
-        </tr>
-      </thead>
-      <tbody id="tablo-govde">
-        <tr><td>Zeynep Kaya</td><td>zeynep2015</td><td><span class="asama-badge a2">2. Aşama</span></td><td>14/30</td><td>⚡ 412</td><td>15.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
-        <tr><td>Mehmet Arslan</td><td>mehmet_a</td><td><span class="asama-badge a2">2. Aşama</span></td><td>12/30</td><td>⚡ 389</td><td>20.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
-        <tr><td>Elif Şahin</td><td>elif_s</td><td><span class="asama-badge a3">3. Aşama</span></td><td>8/30</td><td>⚡ 301</td><td>01.08.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
-        <tr><td>Ali Demir</td><td>ali2016</td><td><span class="asama-badge a2">2. Aşama</span></td><td>7/30</td><td>⚡ 248</td><td>10.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
-        <tr><td>Ayşe Tekin</td><td>ayse_t</td><td><span class="asama-badge a1">1. Aşama</span></td><td>21/30</td><td>⚡ 201</td><td>05.06.2026</td><td><span class="durum bekliyor">● Süresi Bitiyor</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
-        <tr><td>Can Yıldız</td><td>can_y</td><td><span class="asama-badge a4">4. Aşama</span></td><td>3/30</td><td>⚡ 89</td><td>01.05.2026</td><td><span class="durum pasif">● Pasif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
-      </tbody>
-    </table>
+    <div class="kart">
+      <div class="kart-ust">
+        <span class="kart-baslik">👥 Öğrenci Listesi</span>
+        <input class="ara-input" type="text" placeholder="🔍 Öğrenci ara..." oninput="ara(this.value)">
+      </div>
+      <table id="tablo">
+        <thead><tr><th>Ad Soyad</th><th>Kullanıcı Adı</th><th>Aşama</th><th>Gün</th><th>Enerji</th><th>Lisans Bitiş</th><th>Durum</th><th>İşlem</th></tr></thead>
+        <tbody id="tablo-govde">
+          <tr><td>Zeynep Kaya</td><td>zeynep2015</td><td><span class="asama-badge a2">2. Aşama</span></td><td>14/30</td><td>⚡ 412</td><td>15.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+          <tr><td>Mehmet Arslan</td><td>mehmet_a</td><td><span class="asama-badge a2">2. Aşama</span></td><td>12/30</td><td>⚡ 389</td><td>20.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+          <tr><td>Elif Şahin</td><td>elif_s</td><td><span class="asama-badge a3">3. Aşama</span></td><td>8/30</td><td>⚡ 301</td><td>01.08.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+          <tr><td>Ali Demir</td><td>ali2016</td><td><span class="asama-badge a2">2. Aşama</span></td><td>7/30</td><td>⚡ 248</td><td>10.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+          <tr><td>Ayşe Tekin</td><td>ayse_t</td><td><span class="asama-badge a1">1. Aşama</span></td><td>21/30</td><td>⚡ 201</td><td>05.06.2026</td><td><span class="durum bekliyor">● Süresi Bitiyor</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+          <tr><td>Can Yıldız</td><td>can_y</td><td><span class="asama-badge a4">4. Aşama</span></td><td>3/30</td><td>⚡ 89</td><td>01.05.2026</td><td><span class="durum pasif">● Pasif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+
+  <!-- ÖĞRENCİLER SAYFASI -->
+  <div id="sayfa-ogrenciler" class="sayfa">
+    <div class="ust-bar">
+      <div><h1>Öğrenciler</h1><p>Tüm öğrenci hesaplarını buradan yönetin.</p></div>
+      <button class="yeni-btn" onclick="modalAc('ogrenci')">+ Yeni Öğrenci Ekle</button>
+    </div>
+    <div class="kart">
+      <div class="kart-ust">
+        <span class="kart-baslik">👥 Öğrenci Listesi</span>
+        <input class="ara-input" type="text" placeholder="🔍 Öğrenci ara..." oninput="ara(this.value)">
+      </div>
+      <table><thead><tr><th>Ad Soyad</th><th>Kullanıcı Adı</th><th>Aşama</th><th>Gün</th><th>Enerji</th><th>Lisans Bitiş</th><th>Durum</th><th>İşlem</th></tr></thead>
+        <tbody>
+          <tr><td>Zeynep Kaya</td><td>zeynep2015</td><td><span class="asama-badge a2">2. Aşama</span></td><td>14/30</td><td>⚡ 412</td><td>15.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+          <tr><td>Ali Demir</td><td>ali2016</td><td><span class="asama-badge a2">2. Aşama</span></td><td>7/30</td><td>⚡ 248</td><td>10.09.2026</td><td><span class="durum aktif">● Aktif</span></td><td><button class="islem-btn duzenle">Düzenle</button> <button class="islem-btn uzat">Uzat</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HİKAYELER SAYFASI -->
+  <div id="sayfa-hikayeler" class="sayfa">
+    <div class="ust-bar">
+      <div><h1>Hikâyeler</h1><p>Egzersiz metinlerini aşama ve güne göre yükleyin.</p></div>
+      <button class="yeni-btn" onclick="modalAc('hikaye')">+ Yeni Hikâye Ekle</button>
+    </div>
+
+    <!-- FİLTRE -->
+    <div class="kart" style="padding:1rem 1.5rem">
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <div>
+          <label style="font-size:0.8rem;font-weight:600;color:#64748b;margin-right:0.5rem">Aşama:</label>
+          <select id="filtre-asama" onchange="hikayeleriYukle()" style="padding:0.4rem 0.8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none">
+            <option value="">Tümü</option>
+            <option value="1">1. Aşama</option>
+            <option value="2">2. Aşama</option>
+            <option value="3">3. Aşama</option>
+            <option value="4">4. Aşama</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.8rem;font-weight:600;color:#64748b;margin-right:0.5rem">Gün:</label>
+          <select id="filtre-gun" onchange="hikayeleriYukle()" style="padding:0.4rem 0.8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none">
+            <option value="">Tümü</option>
+            <script>for(var i=1;i<=30;i++) document.write('<option value="'+i+'">'+i+'. Gün</option>')</script>
+          </select>
+        </div>
+        <span id="hikaye-sayac" style="font-size:0.82rem;color:#94a3b8;margin-left:auto"></span>
+      </div>
+    </div>
+
+    <!-- HİKAYE LİSTESİ -->
+    <div class="kart">
+      <div id="hikaye-liste">
+        <div class="bos-durum">⏳ Hikâyeler yükleniyor...</div>
+      </div>
+    </div>
+  </div>
+
 </div>
-<div class="modal" id="modal">
+
+<!-- ÖĞRENCİ EKLEME MODALI -->
+<div class="modal" id="modal-ogrenci">
   <div class="modal-kutu">
     <div class="modal-baslik">➕ Yeni Öğrenci Ekle</div>
     <div class="form-grid">
@@ -137,15 +214,206 @@ tr:hover td{background:#f8fafc}
     </div>
     <div class="form-grup"><label>Not (opsiyonel)</label><input type="text" placeholder="Notunuzu girin..."></div>
     <div class="modal-btn-grup">
-      <button class="btn-iptal" onclick="modalKapat()">İptal</button>
-      <button class="btn-kaydet" onclick="alert('Öğrenci eklendi! Yakında veritabanına bağlanacak.')">Kaydet</button>
+      <button class="btn-iptal" onclick="modalKapat('ogrenci')">İptal</button>
+      <button class="btn-kaydet">Kaydet</button>
     </div>
   </div>
 </div>
+
+<!-- HİKAYE EKLEME MODALI -->
+<div class="modal" id="modal-hikaye">
+  <div class="modal-kutu genis">
+    <div class="modal-baslik">📚 Yeni Hikâye Ekle</div>
+    <div class="form-grid-3">
+      <div class="form-grup">
+        <label>Aşama</label>
+        <select id="h-asama">
+          <option value="1">1. Aşama</option>
+          <option value="2">2. Aşama</option>
+          <option value="3">3. Aşama</option>
+          <option value="4">4. Aşama</option>
+        </select>
+      </div>
+      <div class="form-grup">
+        <label>Gün</label>
+        <select id="h-gun">
+          <script>for(var i=1;i<=30;i++) document.write('<option value="'+i+'">'+i+'. Gün</option>')</script>
+        </select>
+      </div>
+      <div class="form-grup">
+        <label>Kelime Sayısı</label>
+        <input type="number" id="h-kelime" placeholder="Örn: 180" min="50" max="500">
+      </div>
+    </div>
+    <div class="form-grup">
+      <label>Hikâye Başlığı</label>
+      <input type="text" id="h-baslik" placeholder="Hikâyenin başlığı...">
+    </div>
+    <div class="form-grup">
+      <label>Hikâye Metni</label>
+      <textarea id="h-metin" placeholder="Hikâye metnini buraya yapıştırın..." oninput="kelimeSay()"></textarea>
+      <div class="sayac" id="kelime-sayac">0 kelime</div>
+    </div>
+    <div class="modal-btn-grup">
+      <button class="btn-iptal" onclick="modalKapat('hikaye')">İptal</button>
+      <button class="btn-kaydet" id="btn-hikaye-kaydet" onclick="hikayeKaydet()">💾 Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- BİLDİRİM -->
+<div class="bildirim" id="bildirim"></div>
+
 <script>
-function modalAc(){document.getElementById('modal').classList.add('acik')}
-function modalKapat(){document.getElementById('modal').classList.remove('acik')}
-function ara(q){var s=document.querySelectorAll('#tablo-govde tr');s.forEach(function(r){r.style.display=r.innerText.toLowerCase().includes(q.toLowerCase())?'':'none'})}
+const SUPABASE_URL = 'https://sfyjnwhblxldrzbrnyva.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmeWpud2hibHhsZHJ6YnJueXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDc4NTYsImV4cCI6MjA5NjMyMzg1Nn0.3mrQ2JSX4InY89iUnoJUCnWefxHXHjgM059PeLQedew';
+
+async function supabase(metod, tablo, veri, filtre) {
+  let url = SUPABASE_URL + '/rest/v1/' + tablo;
+  if (filtre) url += '?' + filtre;
+  const res = await fetch(url, {
+    method: metod,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': metod === 'POST' ? 'return=representation' : ''
+    },
+    body: veri ? JSON.stringify(veri) : undefined
+  });
+  if (!res.ok) {
+    const hata = await res.json();
+    throw new Error(hata.message || 'Hata oluştu');
+  }
+  return metod === 'DELETE' ? true : res.json();
+}
+
+function sayfaGoster(sayfa, link) {
+  document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
+  document.querySelectorAll('.sidebar-menu li a').forEach(a => a.classList.remove('aktif'));
+  document.getElementById('sayfa-' + sayfa).classList.add('aktif');
+  if (link) link.classList.add('aktif');
+  if (sayfa === 'hikayeler') hikayeleriYukle();
+}
+
+function modalAc(tip) {
+  document.getElementById('modal-' + tip).classList.add('acik');
+}
+
+function modalKapat(tip) {
+  document.getElementById('modal-' + tip).classList.remove('acik');
+  if (tip === 'hikaye') {
+    document.getElementById('h-baslik').value = '';
+    document.getElementById('h-metin').value = '';
+    document.getElementById('h-kelime').value = '';
+    document.getElementById('kelime-sayac').textContent = '0 kelime';
+  }
+}
+
+function bildirimGoster(mesaj, tip) {
+  const el = document.getElementById('bildirim');
+  el.textContent = mesaj;
+  el.className = 'bildirim ' + tip;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function kelimeSay() {
+  const metin = document.getElementById('h-metin').value.trim();
+  const sayac = metin ? metin.split(/\s+/).length : 0;
+  document.getElementById('kelime-sayac').textContent = sayac + ' kelime';
+  document.getElementById('h-kelime').value = sayac;
+}
+
+async function hikayeKaydet() {
+  const asama = document.getElementById('h-asama').value;
+  const gun = document.getElementById('h-gun').value;
+  const baslik = document.getElementById('h-baslik').value.trim();
+  const metin = document.getElementById('h-metin').value.trim();
+  const kelime = document.getElementById('h-kelime').value;
+
+  if (!baslik) { bildirimGoster('⚠️ Hikâye başlığı boş olamaz!', 'hata'); return; }
+  if (!metin) { bildirimGoster('⚠️ Hikâye metni boş olamaz!', 'hata'); return; }
+
+  const btn = document.getElementById('btn-hikaye-kaydet');
+  btn.textContent = '⏳ Kaydediliyor...';
+  btn.classList.add('yukluyor');
+
+  try {
+    await supabase('POST', 'hikayeler', {
+      asama: parseInt(asama),
+      gun: parseInt(gun),
+      baslik: baslik,
+      metin: metin,
+      kelime_sayisi: parseInt(kelime) || 0
+    });
+    bildirimGoster('✅ Hikâye başarıyla kaydedildi!', 'basari');
+    modalKapat('hikaye');
+    hikayeleriYukle();
+  } catch(e) {
+    bildirimGoster('❌ Hata: ' + e.message, 'hata');
+  }
+
+  btn.textContent = '💾 Kaydet';
+  btn.classList.remove('yukluyor');
+}
+
+async function hikayeSil(id) {
+  if (!confirm('Bu hikâyeyi silmek istediğinize emin misiniz?')) return;
+  try {
+    await supabase('DELETE', 'hikayeler', null, 'id=eq.' + id);
+    bildirimGoster('🗑️ Hikâye silindi.', 'basari');
+    hikayeleriYukle();
+  } catch(e) {
+    bildirimGoster('❌ Silinemedi: ' + e.message, 'hata');
+  }
+}
+
+async function hikayeleriYukle() {
+  const liste = document.getElementById('hikaye-liste');
+  liste.innerHTML = '<div class="bos-durum">⏳ Yükleniyor...</div>';
+
+  let filtre = 'order=asama,gun';
+  const asama = document.getElementById('filtre-asama').value;
+  const gun = document.getElementById('filtre-gun').value;
+  if (asama) filtre += '&asama=eq.' + asama;
+  if (gun) filtre += '&gun=eq.' + gun;
+
+  try {
+    const hikayeler = await supabase('GET', 'hikayeler', null, filtre);
+    document.getElementById('hikaye-sayac').textContent = hikayeler.length + ' hikâye';
+
+    if (hikayeler.length === 0) {
+      liste.innerHTML = '<div class="bos-durum">📭 Henüz hikâye eklenmemiş.<br><small>Sağ üstteki "+ Yeni Hikâye Ekle" butonunu kullanın.</small></div>';
+      return;
+    }
+
+    const asamaRenk = {'1':'a1','2':'a2','3':'a3','4':'a4'};
+    liste.innerHTML = '<table><thead><tr><th>Aşama</th><th>Gün</th><th>Başlık</th><th>Kelime</th><th>Eklenme</th><th>İşlem</th></tr></thead><tbody id="hikaye-tbody"></tbody></table>';
+
+    const tbody = document.getElementById('hikaye-tbody');
+    hikayeler.forEach(h => {
+      const tarih = h.created_at ? new Date(h.created_at).toLocaleDateString('tr-TR') : '-';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="asama-badge ${asamaRenk[h.asama]}">${h.asama}. Aşama</span></td>
+        <td>${h.gun}. Gün</td>
+        <td><strong>${h.baslik}</strong><div class="metin-onizleme" style="margin-top:0.4rem">${h.metin.substring(0,120)}...</div></td>
+        <td>${h.kelime_sayisi || '-'}</td>
+        <td>${tarih}</td>
+        <td><button class="islem-btn sil" onclick="hikayeSil(${h.id})">🗑️ Sil</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch(e) {
+    liste.innerHTML = '<div class="bos-durum">❌ Yüklenemedi: ' + e.message + '<br><small>Supabase\'de "hikayeler" tablosunun oluşturulduğundan emin olun.</small></div>';
+  }
+}
+
+function ara(q) {
+  var s = document.querySelectorAll('#tablo-govde tr');
+  s.forEach(function(r){ r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase()) ? '' : 'none' });
+}
 </script>
 </body>
 </html>
