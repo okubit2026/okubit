@@ -171,6 +171,7 @@ canvas#oyunCanvas{width:100%;border-radius:16px;border:1px solid rgba(255,255,25
 
     <div class="cevap-kutu">
       <div class="cevap-soru">Ekranda kaç tane <strong id="cSoruIsim">yıldız</strong> gördün?</div>
+      <div id="cevap-ipucu" style="font-size:0.75rem;color:rgba(0,212,255,0.5);margin-bottom:10px;font-style:italic;"></div>
       <div class="cevap-grid" id="cevapGrid"></div>
     </div>
   </div>
@@ -252,8 +253,10 @@ function sonrakiTur(){
   const w = canvas.offsetWidth || 560;
   canvas.width = w;
 
-  // Kaç tane hedef olacak - önceden belirle
-  const hedefAdedi = rastgele(Math.floor(nesneAdedi*0.25), Math.floor(nesneAdedi*0.55));
+  // Kaç tane hedef olacak - minimum 2, maksimum nesnenin yarısı
+  const minHedef = 2;
+  const maxHedef = Math.max(3, Math.floor(nesneAdedi * 0.5));
+  const hedefAdedi = rastgele(minHedef, maxHedef);
   const digerAdedi = nesneAdedi - hedefAdedi;
 
   // Hedef nesneleri ekle
@@ -348,6 +351,8 @@ function turBitti(){
   document.getElementById('cHedefNesne').textContent = G.hedef.emoji;
   document.getElementById('cHedefIsim').textContent = G.hedef.isim;
   document.getElementById('cSoruIsim').textContent = G.hedef.isim.toLowerCase();
+  // Debug: doğru sayıyı göster (geliştirme aşamasında yardımcı olur)
+  document.getElementById('cevap-ipucu').textContent = 'Ekranda ' + G.hedefSayisi + ' tane ' + G.hedef.isim.toLowerCase() + ' vardı.';
 
   // Seçenekler oluştur - doğru cevaba yakın, ama farklı
   const dogru = G.hedefSayisi;
