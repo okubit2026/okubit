@@ -228,7 +228,8 @@ function izgaraCiz(){
       const td=document.createElement('td');
       td.textContent=G.izgara[r][c];
       td.id='h_'+r+'_'+c;
-      td.onclick=function(){tikla(r,c);}; // onclick ile doğrudan bağla
+      const rr=r, cc=c; // closure için kopyala
+      td.onclick=function(){tikla(rr,cc);};
       tr.appendChild(td);
     }
     tablo.appendChild(tr);
@@ -239,28 +240,19 @@ function tikla(r,c){
   const td=document.getElementById('h_'+r+'_'+c);
   if(!td||td.classList.contains('bulundu')) return;
 
-  // Zaten seçili mi?
+  // Zaten seçili mi? Sıfırla
   const idx=G.secili.findIndex(s=>s.r===r&&s.c===c);
   if(idx>=0){
-    // Seçimi sıfırla
-    G.secili.forEach(s=>{
-      const el=document.getElementById('h_'+s.r+'_'+s.c);
-      if(el) el.classList.remove('secili');
-    });
+    G.secili.forEach(s=>{const el=document.getElementById('h_'+s.r+'_'+s.c);if(el)el.classList.remove('secili');});
     G.secili=[];
     return;
   }
 
-  // Yeni seçim
+  // Bitişik değilse sıfırla
   if(G.secili.length>0){
     const son=G.secili[G.secili.length-1];
-    const dr=r-son.r, dc=c-son.c;
-    // Bitişik değilse sıfırla
-    if(Math.abs(dr)>1||Math.abs(dc)>1){
-      G.secili.forEach(s=>{
-        const el=document.getElementById('h_'+s.r+'_'+s.c);
-        if(el) el.classList.remove('secili');
-      });
+    if(Math.abs(r-son.r)>1||Math.abs(c-son.c)>1){
+      G.secili.forEach(s=>{const el=document.getElementById('h_'+s.r+'_'+s.c);if(el)el.classList.remove('secili');});
       G.secili=[];
     }
   }
@@ -268,15 +260,11 @@ function tikla(r,c){
   G.secili.push({r,c});
   td.classList.add('secili');
 
-  // Kelime var mı?
   const metin=G.secili.map(s=>G.izgara[s.r][s.c]).join('');
   const bulunan=G.kelimeler.find(k=>k===metin&&!G.bulunan.includes(k));
   if(bulunan){
     G.bulunan.push(bulunan);
-    G.secili.forEach(s=>{
-      const el=document.getElementById('h_'+s.r+'_'+s.c);
-      if(el){el.classList.remove('secili');el.classList.add('bulundu');}
-    });
+    G.secili.forEach(s=>{const el=document.getElementById('h_'+s.r+'_'+s.c);if(el){el.classList.remove('secili');el.classList.add('bulundu');}});
     G.secili=[];
     G.puan+=100;
     document.getElementById('hScore').textContent=G.puan;
