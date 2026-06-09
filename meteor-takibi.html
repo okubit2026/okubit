@@ -60,6 +60,7 @@ body {
 
 .screen { display:none; flex-direction:column; align-items:center; flex:1; overflow-y:auto; }
 .screen.active { display:flex; }
+.screen:not(.active) { pointer-events:none !important; visibility:hidden !important; }
 
 .game-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.3rem,5vw,2rem); font-weight:900; text-align:center; margin:16px 0 4px; color:var(--white); text-shadow:0 0 30px rgba(0,212,255,0.5); }
 .game-sub { color:var(--grey); font-size:0.8rem; letter-spacing:2px; text-align:center; margin-bottom:24px; }
