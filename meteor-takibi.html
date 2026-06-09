@@ -90,7 +90,7 @@ body {
 .hud-lbl { font-size:0.6rem; color:var(--grey); letter-spacing:1px; text-transform:uppercase; }
 .hud-val { font-family:'Orbitron',sans-serif; font-size:0.85rem; font-weight:700; color:var(--accent); }
 
-#gameCanvas { position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; }
+#gameCanvas { position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; pointer-events:none; }
 
 .game-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:20; pointer-events:none; }
 .overlay-box { background:rgba(6,13,26,0.92); border:1px solid rgba(0,212,255,0.4); border-radius:20px; padding:24px 32px; text-align:center; max-width:320px; box-shadow:0 0 40px rgba(0,212,255,0.2); }
@@ -440,6 +440,10 @@ function stopTracking() {
   // TÜM METEORLARI DONDUR
   G.meteors.forEach(m => { m.frozen=true; m.tail=[]; });
 
+  // Canvas'ı tıklanabilir yap
+  gc.style.pointerEvents = 'auto';
+  gc.style.cursor = 'crosshair';
+
   // Overlay'i kapat, seçim bannerını göster
   document.getElementById('gameOverlay').style.display='none';
   document.getElementById('selectBanner').style.display='block';
@@ -489,6 +493,7 @@ function endRound(correct) {
   loopActive=false;
   cancelAnimationFrame(G.animId);
   document.getElementById('selectBanner').style.display='none';
+  gc.style.pointerEvents = 'none'; // Canvas'ı tekrar devre dışı bırak
 
   // Reveal: hedef rengi geri ver, halka çiz
   G.meteors.forEach(m => { m.displayColor=m.isTarget?m.color:'#334455'; });
