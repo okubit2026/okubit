@@ -243,58 +243,60 @@ function sonrakiTur(){
   const ayar = ASAMALAR[G.asama];
   const nesneAdedi = rastgele(ayar.minNesne, ayar.maxNesne);
 
-  // Hedef nesneyi seç
-  G.hedef = NESNELER[Math.floor(Math.random()*NESNELER.length)];
-  G.hedefSayisi = 0;
-
-  // Nesneleri oluştur
-  G.nesneler = [];
-  G.hedefSayisi = 0;
-  const w = canvas.offsetWidth || 560;
+  // Canvas boyutunu al - offsetWidth yerine parentElement kullân
+  const w = canvas.parentElement.offsetWidth || 500;
+  const h = 280;
   canvas.width = w;
+  canvas.height = h;
 
-  // Kaç tane hedef olacak - minimum 2, maksimum nesnenin yarısı
-  const minHedef = 2;
-  const maxHedef = Math.max(3, Math.floor(nesneAdedi * 0.5));
-  const hedefAdedi = rastgele(minHedef, maxHedef);
+  // Önce hangi nesneler kullanılacak belirle
+  // Hedef: minimum 2, maksimum nesne sayısının yarısı
+  const hedefAdedi = rastgele(2, Math.max(2, Math.floor(nesneAdedi * 0.5)));
   const digerAdedi = nesneAdedi - hedefAdedi;
 
-  // Hedef nesneleri ekle
-  for(let i=0; i<hedefAdedi; i++){
-    const aci = (Math.PI*2 / nesneAdedi) * i;
-    const r = (Math.min(w, 280) * 0.35) * (0.5 + Math.random()*0.4);
+  // Hedef nesneyi seç
+  G.hedef = NESNELER[Math.floor(Math.random() * NESNELER.length)];
+  G.hedefSayisi = hedefAdedi; // KESIN sayı - değişmez
+
+  // Diğer nesneler - hedeften farklı olsun
+  const digerler = NESNELER.filter(n => n.emoji !== G.hedef.emoji);
+
+  // Tüm nesneleri oluştur
+  G.nesneler = [];
+
+  // Hedef nesneler
+  for(let i = 0; i < hedefAdedi; i++){
     G.nesneler.push({
       emoji: G.hedef.emoji,
-      x: w/2 + Math.cos(aci)*r,
-      y: 140 + Math.sin(aci)*r,
-      vx: (Math.random()-0.5)*ayar.hiz,
-      vy: (Math.random()-0.5)*ayar.hiz,
-      boyut: 22 + Math.random()*8,
+      x: rastgele(40, w - 40),
+      y: rastgele(40, h - 40),
+      vx: (Math.random() - 0.5) * ayar.hiz * 2,
+      vy: (Math.random() - 0.5) * ayar.hiz * 2,
+      boyut: 22 + Math.random() * 8,
     });
-    G.hedefSayisi++;
   }
 
-  // Diğer nesneleri ekle (hedef olmayan)
-  const digerler = NESNELER.filter(n => n !== G.hedef);
-  for(let i=0; i<digerAdedi; i++){
-    const diger = digerler[Math.floor(Math.random()*digerler.length)];
-    const aci = (Math.PI*2 / nesneAdedi) * (hedefAdedi + i);
-    const r = (Math.min(w, 280) * 0.35) * (0.5 + Math.random()*0.4);
+  // Diğer nesneler
+  for(let i = 0; i < digerAdedi; i++){
+    const d = digerler[Math.floor(Math.random() * digerler.length)];
     G.nesneler.push({
-      emoji: diger.emoji,
-      x: w/2 + Math.cos(aci)*r,
-      y: 140 + Math.sin(aci)*r,
-      vx: (Math.random()-0.5)*ayar.hiz,
-      vy: (Math.random()-0.5)*ayar.hiz,
-      boyut: 22 + Math.random()*8,
+      emoji: d.emoji,
+      x: rastgele(40, w - 40),
+      y: rastgele(40, h - 40),
+      vx: (Math.random() - 0.5) * ayar.hiz * 2,
+      vy: (Math.random() - 0.5) * ayar.hiz * 2,
+      boyut: 22 + Math.random() * 8,
     });
   }
 
   // Karıştır
-  for(let i=G.nesneler.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.nesneler[i],G.nesneler[j]]=[G.nesneler[j],G.nesneler[i]];}
+  for(let i = G.nesneler.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [G.nesneler[i], G.nesneler[j]] = [G.nesneler[j], G.nesneler[i]];
+  }
 
   // HUD güncelle
-  document.getElementById('hudTur').textContent = G.tur+'/'+ayar.turSayisi;
+  document.getElementById('hudTur').textContent = G.tur + '/' + ayar.turSayisi;
   document.getElementById('hudDogru').textContent = G.dogru;
   document.getElementById('hudPuan').textContent = G.puan;
   document.getElementById('hedefNesne').textContent = G.hedef.emoji;
@@ -311,8 +313,8 @@ function sonrakiTur(){
     const gecen = Date.now() - G.baslangic;
     const kalan = Math.max(0, ayar.sure - gecen);
     const pct = kalan / ayar.sure * 100;
-    document.getElementById('sureDolu').style.width = pct+'%';
-    document.getElementById('sureYazi').textContent = 'Süre: '+(kalan/1000).toFixed(1)+' sn';
+    document.getElementById('sureDolu').style.width = pct + '%';
+    document.getElementById('sureYazi').textContent = 'Süre: ' + (kalan/1000).toFixed(1) + ' sn';
     if(kalan <= 0){ clearInterval(G.sureInterval); turBitti(); }
   }, 100);
 }
