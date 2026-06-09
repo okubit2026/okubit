@@ -248,27 +248,47 @@ function sonrakiTur(){
 
   // Nesneleri oluştur
   G.nesneler = [];
+  G.hedefSayisi = 0;
   const w = canvas.offsetWidth || 560;
   canvas.width = w;
 
-  for(let i=0; i<nesneAdedi; i++){
-    const hedefMi = i < Math.floor(nesneAdedi * 0.35) + rastgele(1,3);
-    const nesne = hedefMi ? G.hedef : NESNELER[Math.floor(Math.random()*NESNELER.length)];
-    if(hedefMi && nesne === G.hedef) G.hedefSayisi++;
+  // Kaç tane hedef olacak - önceden belirle
+  const hedefAdedi = rastgele(Math.floor(nesneAdedi*0.25), Math.floor(nesneAdedi*0.55));
+  const digerAdedi = nesneAdedi - hedefAdedi;
 
+  // Hedef nesneleri ekle
+  for(let i=0; i<hedefAdedi; i++){
     const aci = (Math.PI*2 / nesneAdedi) * i;
-    const r = (Math.min(w, 280) * 0.35) * (0.6 + Math.random()*0.4);
+    const r = (Math.min(w, 280) * 0.35) * (0.5 + Math.random()*0.4);
     G.nesneler.push({
-      emoji: nesne.emoji,
-      isHedef: nesne === G.hedef,
+      emoji: G.hedef.emoji,
       x: w/2 + Math.cos(aci)*r,
       y: 140 + Math.sin(aci)*r,
       vx: (Math.random()-0.5)*ayar.hiz,
       vy: (Math.random()-0.5)*ayar.hiz,
       boyut: 22 + Math.random()*8,
-      aci: aci,
+    });
+    G.hedefSayisi++;
+  }
+
+  // Diğer nesneleri ekle (hedef olmayan)
+  const digerler = NESNELER.filter(n => n !== G.hedef);
+  for(let i=0; i<digerAdedi; i++){
+    const diger = digerler[Math.floor(Math.random()*digerler.length)];
+    const aci = (Math.PI*2 / nesneAdedi) * (hedefAdedi + i);
+    const r = (Math.min(w, 280) * 0.35) * (0.5 + Math.random()*0.4);
+    G.nesneler.push({
+      emoji: diger.emoji,
+      x: w/2 + Math.cos(aci)*r,
+      y: 140 + Math.sin(aci)*r,
+      vx: (Math.random()-0.5)*ayar.hiz,
+      vy: (Math.random()-0.5)*ayar.hiz,
+      boyut: 22 + Math.random()*8,
     });
   }
+
+  // Karıştır
+  for(let i=G.nesneler.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[G.nesneler[i],G.nesneler[j]]=[G.nesneler[j],G.nesneler[i]];}
 
   // HUD güncelle
   document.getElementById('hudTur').textContent = G.tur+'/'+ayar.turSayisi;
@@ -329,14 +349,20 @@ function turBitti(){
   document.getElementById('cHedefIsim').textContent = G.hedef.isim;
   document.getElementById('cSoruIsim').textContent = G.hedef.isim.toLowerCase();
 
-  // Seçenekler oluştur
+  // Seçenekler oluştur - doğru cevaba yakın, ama farklı
   const dogru = G.hedefSayisi;
-  const secenekler = new Set([dogru]);
-  while(secenekler.size < 4){
-    const fark = rastgele(1,4);
-    secenekler.add(Math.max(0, dogru + (Math.random()>0.5 ? fark : -fark)));
+  const secenekSet = new Set([dogru]);
+  let deneme = 0;
+  while(secenekSet.size < 4 && deneme < 100){
+    deneme++;
+    const fark = rastgele(1, 3);
+    const yeni = Math.random() > 0.5 ? dogru + fark : Math.max(0, dogru - fark);
+    if(yeni !== dogru) secenekSet.add(yeni);
   }
-  const dizi = karistir([...secenekler]);
+  // Eğer hâlâ 4 seçenek yoksa ekle
+  let ekstra = 1;
+  while(secenekSet.size < 4){ secenekSet.add(dogru + ekstra); ekstra++; }
+  const dizi = karistir([...secenekSet]);
 
   const grid = document.getElementById('cevapGrid');
   grid.innerHTML = '';
