@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dönen Nesneler – OKUBİT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap');
+:root { --bg:#060d1a; --accent:#00d4ff; --accent2:#0088bb; --gold:#ffd700; --green:#00ff88; --red:#ff4466; --white:#e8f4ff; --grey:#6a8aaa; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min-height:100vh;user-select:none;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 40% 60%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 75% 15%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 85% 75%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(2px 2px at 55% 40%,rgba(0,212,255,0.15) 0%,transparent 100%);}
+#app{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:16px;min-height:100vh;display:flex;flex-direction:column;}
+.header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 16px;}
+.logo{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:3px;text-shadow:0 0 20px rgba(0,212,255,0.5);}
+.logo span{color:var(--white);}
+.score-pill{display:flex;align-items:center;gap:6px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:20px;padding:5px 14px;font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;color:var(--accent);}
+.screen{display:none;flex-direction:column;align-items:center;flex:1;}
+.screen.active{display:flex;}
+.screen:not(.active){pointer-events:none !important;visibility:hidden !important;}
+.game-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.3rem,5vw,2rem);font-weight:900;text-align:center;margin:16px 0 6px;text-shadow:0 0 30px rgba(0,212,255,0.4);}
+.game-sub{color:var(--grey);font-size:0.8rem;letter-spacing:2px;text-align:center;margin-bottom:24px;}
+.menu-card{background:rgba(255,255,255,0.03);border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:20px;width:100%;max-width:480px;margin-bottom:14px;}
+.menu-card h3{font-family:'Orbitron',sans-serif;font-size:0.68rem;color:var(--accent);letter-spacing:2px;margin-bottom:14px;opacity:0.8;}
+.asama-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.asama-btn{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:12px 6px;cursor:pointer;transition:all 0.2s;text-align:center;color:var(--grey);}
+.asama-btn:hover,.asama-btn.sel{background:rgba(0,212,255,0.15);border-color:var(--accent);color:var(--white);}
+.asama-btn .as-n{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;color:var(--accent);display:block;margin-bottom:3px;}
+.asama-btn .as-d{font-size:0.65rem;line-height:1.4;}
+.start-btn{width:100%;max-width:480px;padding:16px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:14px;color:var(--bg);font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 24px rgba(0,212,255,0.3);}
+.start-btn:hover{transform:translateY(-2px);}
+.geri-btn{margin-top:12px;color:rgba(106,138,170,0.8);font-size:0.8rem;text-decoration:none;display:block;text-align:center;padding:8px;background:none;border:none;cursor:pointer;font-family:'Nunito',sans-serif;}
+.geri-btn:hover{color:var(--white);}
+
+/* OYUN */
+.game-hud{display:flex;justify-content:space-between;width:100%;padding:10px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;margin-bottom:12px;}
+.hud-item{text-align:center;}
+.hud-lbl{font-size:0.6rem;color:var(--grey);letter-spacing:1px;text-transform:uppercase;}
+.hud-val{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;color:var(--accent);margin-top:2px;}
+
+/* HEDEF BANNER */
+.hedef-banner{width:100%;max-width:560px;background:rgba(255,215,0,0.08);border:1.5px solid rgba(255,215,0,0.35);border-radius:14px;padding:12px 20px;text-align:center;margin-bottom:12px;}
+.hedef-banner-lbl{font-size:0.7rem;color:var(--grey);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.hedef-nesne{font-size:2.2rem;display:block;}
+.hedef-isim{font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--gold);margin-top:2px;}
+
+/* CANVAS ALANI */
+.canvas-wrap{width:100%;max-width:560px;position:relative;margin-bottom:12px;}
+canvas#oyunCanvas{width:100%;border-radius:16px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);display:block;}
+
+/* SÜRE ÇUBUĞU */
+.sure-bar-wrap{width:100%;max-width:560px;margin-bottom:12px;}
+.sure-bar-ust{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--grey);margin-bottom:4px;}
+.sure-bar{width:100%;height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.sure-bar-dolu{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;transition:width 0.1s linear;}
+
+/* CEVAP */
+.cevap-kutu{width:100%;max-width:480px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:20px;text-align:center;}
+.cevap-soru{font-size:0.9rem;color:var(--grey);margin-bottom:14px;}
+.cevap-soru strong{color:var(--gold);font-size:1.1rem;}
+.cevap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;}
+.cevap-btn{padding:14px 6px;background:rgba(0,212,255,0.06);border:1.5px solid rgba(0,212,255,0.25);border-radius:10px;color:var(--white);font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.cevap-btn:hover{background:rgba(0,212,255,0.16);border-color:var(--accent);}
+.cevap-btn.dogru{background:rgba(0,255,136,0.2);border-color:var(--green);color:var(--green);}
+.cevap-btn.yanlis{background:rgba(255,68,102,0.2);border-color:var(--red);color:var(--red);}
+
+/* SONUÇ */
+.sonuc-kart{width:100%;max-width:440px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:28px 24px;text-align:center;margin:16px 0;animation:fadeUp 0.4s ease forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.sonuc-icon{font-size:3rem;display:block;margin-bottom:10px;}
+.sonuc-baslik{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:900;color:var(--green);margin-bottom:16px;}
+.stats-row{display:flex;justify-content:space-around;padding:14px 0;border-top:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:20px;}
+.stat-n{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;color:var(--accent);}
+.stat-l{font-size:0.68rem;color:var(--grey);margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;}
+.btn-play{flex:1;max-width:200px;padding:13px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:12px;color:var(--bg);font-family:'Orbitron',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;}
+.btn-back{flex:1;max-width:160px;padding:13px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:var(--grey);font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;}
+.btn-back:hover{background:rgba(255,255,255,0.1);color:var(--white);}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="logo">OKU<span>BİT</span></div>
+    <div class="score-pill">⚡ <span id="hScore">0</span></div>
+  </div>
+
+  <!-- MENÜ -->
+  <div id="screenMenu" class="screen active">
+    <div style="font-size:2.5rem;margin-top:8px;margin-bottom:4px">🔄</div>
+    <div class="game-title">DÖNEN NESNELER</div>
+    <div class="game-sub">SEÇİCİ DİKKAT EGZERSİZİ</div>
+
+    <div class="menu-card">
+      <h3>AŞAMA</h3>
+      <div class="asama-grid">
+        <div class="asama-btn sel" onclick="selAsama(1,this)">
+          <span class="as-n">1</span>
+          <span class="as-d">4-6 nesne<br>Yavaş</span>
+        </div>
+        <div class="asama-btn" onclick="selAsama(2,this)">
+          <span class="as-n">2</span>
+          <span class="as-d">6-9 nesne<br>Orta</span>
+        </div>
+        <div class="asama-btn" onclick="selAsama(3,this)">
+          <span class="as-n">3</span>
+          <span class="as-d">9-12 nesne<br>Hızlı</span>
+        </div>
+        <div class="asama-btn" onclick="selAsama(4,this)">
+          <span class="as-n">4</span>
+          <span class="as-d">12-16 nesne<br>Çok Hızlı</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <h3>NASIL OYNANIR?</h3>
+      <div style="font-size:0.83rem;color:var(--grey);line-height:1.7">
+        🎯 Ekranda farklı nesneler dönüp dolaşır<br>
+        👁️ Hedef nesneyi takip et ve say<br>
+        ⏱️ Süre dolunca kaç tane gördüğünü seç<br>
+        📈 Her doğru cevapta bir sonraki tur daha zorlaşır
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="oyunuBaslat()">BAŞLAT ▶</button>
+    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+  </div>
+
+  <!-- OYUN -->
+  <div id="screenGame" class="screen">
+    <div class="game-hud">
+      <div class="hud-item"><div class="hud-lbl">Tur</div><div class="hud-val" id="hudTur">1/5</div></div>
+      <div class="hud-item"><div class="hud-lbl">Doğru</div><div class="hud-val" id="hudDogru">0</div></div>
+      <div class="hud-item"><div class="hud-lbl">Puan</div><div class="hud-val" id="hudPuan">0</div></div>
+    </div>
+
+    <div class="hedef-banner">
+      <div class="hedef-banner-lbl">Hedef Nesne — Kaç Tane Geçiyor?</div>
+      <span class="hedef-nesne" id="hedefNesne">⭐</span>
+      <div class="hedef-isim" id="hedefIsim">Yıldız</div>
+    </div>
+
+    <div class="sure-bar-wrap">
+      <div class="sure-bar-ust">
+        <span id="sureYazi">Süre: 10 sn</span>
+        <span id="sayiYazi">Saydın mı?</span>
+      </div>
+      <div class="sure-bar"><div class="sure-bar-dolu" id="sureDolu" style="width:100%"></div></div>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="oyunCanvas" height="280"></canvas>
+    </div>
+
+    <button class="geri-btn" onclick="menuye()">← Menüye Dön</button>
+  </div>
+
+  <!-- CEVAP -->
+  <div id="screenCevap" class="screen">
+    <div class="game-hud" style="margin-bottom:16px">
+      <div class="hud-item"><div class="hud-lbl">Tur</div><div class="hud-val" id="cTur">1/5</div></div>
+      <div class="hud-item"><div class="hud-lbl">Doğru</div><div class="hud-val" id="cDogru">0</div></div>
+      <div class="hud-item"><div class="hud-lbl">Puan</div><div class="hud-val" id="cPuan">0</div></div>
+    </div>
+
+    <div class="hedef-banner" style="margin-bottom:20px">
+      <span class="hedef-nesne" id="cHedefNesne">⭐</span>
+      <div class="hedef-isim" id="cHedefIsim">Yıldız</div>
+    </div>
+
+    <div class="cevap-kutu">
+      <div class="cevap-soru">Ekranda kaç tane <strong id="cSoruIsim">yıldız</strong> gördün?</div>
+      <div class="cevap-grid" id="cevapGrid"></div>
+    </div>
+  </div>
+
+  <!-- SONUÇ -->
+  <div id="screenSonuc" class="screen">
+    <div class="sonuc-kart">
+      <span class="sonuc-icon" id="sonucIcon">🎯</span>
+      <div class="sonuc-baslik" id="sonucBaslik">TAMAMLANDI!</div>
+      <div class="stats-row">
+        <div><div class="stat-n" id="sDogru">0</div><div class="stat-l">Doğru</div></div>
+        <div><div class="stat-n" id="sYanlis">0</div><div class="stat-l">Yanlış</div></div>
+        <div><div class="stat-n" id="sPuan">0</div><div class="stat-l">Puan</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-play" onclick="tekrarOyna()">▶ TEKRAR</button>
+        <button class="btn-back" onclick="menuye()">MENÜ</button>
+      </div>
+    </div>
+    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+  </div>
+</div>
+
+<script>
+const NESNELER = [
+  {emoji:'⭐', isim:'Yıldız'},
+  {emoji:'🚀', isim:'Roket'},
+  {emoji:'☄️', isim:'Meteor'},
+  {emoji:'🌙', isim:'Ay'},
+  {emoji:'💫', isim:'Işık'},
+  {emoji:'🪐', isim:'Gezegen'},
+  {emoji:'🌟', isim:'Parlak Yıldız'},
+  {emoji:'🛸', isim:'UFO'},
+];
+
+const ASAMALAR = {
+  1:{minNesne:4, maxNesne:6, hiz:1.2, sure:10000, turSayisi:5},
+  2:{minNesne:6, maxNesne:9, hiz:1.8, sure:10000, turSayisi:5},
+  3:{minNesne:9, maxNesne:12, hiz:2.5, sure:10000, turSayisi:5},
+  4:{minNesne:12, maxNesne:16, hiz:3.5, sure:10000, turSayisi:5},
+};
+
+const G = {
+  asama:1, tur:0, dogru:0, yanlis:0, puan:0,
+  hedef:null, nesneler:[], hedefSayisi:0,
+  animId:null, sureInterval:null,
+  baslangic:0
+};
+
+const canvas = document.getElementById('oyunCanvas');
+const ctx = canvas.getContext('2d');
+
+function selAsama(n,el){
+  G.asama=n;
+  document.querySelectorAll('.asama-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function oyunuBaslat(){
+  G.tur=0; G.dogru=0; G.yanlis=0; G.puan=0;
+  showScreen('screenGame');
+  sonrakiTur();
+}
+
+function sonrakiTur(){
+  if(G.tur >= ASAMALAR[G.asama].turSayisi){ oyunuBitir(); return; }
+  G.tur++;
+
+  const ayar = ASAMALAR[G.asama];
+  const nesneAdedi = rastgele(ayar.minNesne, ayar.maxNesne);
+
+  // Hedef nesneyi seç
+  G.hedef = NESNELER[Math.floor(Math.random()*NESNELER.length)];
+  G.hedefSayisi = 0;
+
+  // Nesneleri oluştur
+  G.nesneler = [];
+  const w = canvas.offsetWidth || 560;
+  canvas.width = w;
+
+  for(let i=0; i<nesneAdedi; i++){
+    const hedefMi = i < Math.floor(nesneAdedi * 0.35) + rastgele(1,3);
+    const nesne = hedefMi ? G.hedef : NESNELER[Math.floor(Math.random()*NESNELER.length)];
+    if(hedefMi && nesne === G.hedef) G.hedefSayisi++;
+
+    const aci = (Math.PI*2 / nesneAdedi) * i;
+    const r = (Math.min(w, 280) * 0.35) * (0.6 + Math.random()*0.4);
+    G.nesneler.push({
+      emoji: nesne.emoji,
+      isHedef: nesne === G.hedef,
+      x: w/2 + Math.cos(aci)*r,
+      y: 140 + Math.sin(aci)*r,
+      vx: (Math.random()-0.5)*ayar.hiz,
+      vy: (Math.random()-0.5)*ayar.hiz,
+      boyut: 22 + Math.random()*8,
+      aci: aci,
+    });
+  }
+
+  // HUD güncelle
+  document.getElementById('hudTur').textContent = G.tur+'/'+ayar.turSayisi;
+  document.getElementById('hudDogru').textContent = G.dogru;
+  document.getElementById('hudPuan').textContent = G.puan;
+  document.getElementById('hedefNesne').textContent = G.hedef.emoji;
+  document.getElementById('hedefIsim').textContent = G.hedef.isim;
+
+  // Animasyonu başlat
+  G.baslangic = Date.now();
+  if(G.animId) cancelAnimationFrame(G.animId);
+  animasyonDongusu();
+
+  // Süre sayacı
+  if(G.sureInterval) clearInterval(G.sureInterval);
+  G.sureInterval = setInterval(()=>{
+    const gecen = Date.now() - G.baslangic;
+    const kalan = Math.max(0, ayar.sure - gecen);
+    const pct = kalan / ayar.sure * 100;
+    document.getElementById('sureDolu').style.width = pct+'%';
+    document.getElementById('sureYazi').textContent = 'Süre: '+(kalan/1000).toFixed(1)+' sn';
+    if(kalan <= 0){ clearInterval(G.sureInterval); turBitti(); }
+  }, 100);
+}
+
+function animasyonDongusu(){
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  G.nesneler.forEach(n=>{
+    n.x += n.vx;
+    n.y += n.vy;
+    // Sınırlardan sekme
+    if(n.x < 20 || n.x > w-20) n.vx *= -1;
+    if(n.y < 20 || n.y > h-20) n.vy *= -1;
+    n.x = Math.max(20, Math.min(w-20, n.x));
+    n.y = Math.max(20, Math.min(h-20, n.y));
+
+    ctx.font = n.boyut+'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(n.emoji, n.x, n.y);
+  });
+
+  G.animId = requestAnimationFrame(animasyonDongusu);
+}
+
+function turBitti(){
+  cancelAnimationFrame(G.animId);
+  clearInterval(G.sureInterval);
+
+  // Cevap ekranı
+  document.getElementById('cTur').textContent = G.tur+'/'+ASAMALAR[G.asama].turSayisi;
+  document.getElementById('cDogru').textContent = G.dogru;
+  document.getElementById('cPuan').textContent = G.puan;
+  document.getElementById('cHedefNesne').textContent = G.hedef.emoji;
+  document.getElementById('cHedefIsim').textContent = G.hedef.isim;
+  document.getElementById('cSoruIsim').textContent = G.hedef.isim.toLowerCase();
+
+  // Seçenekler oluştur
+  const dogru = G.hedefSayisi;
+  const secenekler = new Set([dogru]);
+  while(secenekler.size < 4){
+    const fark = rastgele(1,4);
+    secenekler.add(Math.max(0, dogru + (Math.random()>0.5 ? fark : -fark)));
+  }
+  const dizi = karistir([...secenekler]);
+
+  const grid = document.getElementById('cevapGrid');
+  grid.innerHTML = '';
+  dizi.forEach(s=>{
+    const btn = document.createElement('button');
+    btn.className = 'cevap-btn';
+    btn.textContent = s;
+    btn.onclick = ()=> cevapKontrol(s, dogru, btn);
+    grid.appendChild(btn);
+  });
+
+  showScreen('screenCevap');
+}
+
+function cevapKontrol(secilen, dogru, btn){
+  document.querySelectorAll('.cevap-btn').forEach(b=>b.onclick=null);
+  const dogrum = secilen === dogru;
+
+  if(dogrum){
+    btn.classList.add('dogru');
+    G.dogru++;
+    G.puan += 100;
+  } else {
+    btn.classList.add('yanlis');
+    document.querySelectorAll('.cevap-btn').forEach(b=>{
+      if(parseInt(b.textContent)===dogru) b.classList.add('dogru');
+    });
+    G.yanlis++;
+  }
+
+  document.getElementById('hScore').textContent = G.puan;
+  setTimeout(()=> sonrakiTur(), 1000);
+}
+
+function oyunuBitir(){
+  const oran = Math.round(G.dogru/ASAMALAR[G.asama].turSayisi*100);
+  document.getElementById('sonucIcon').textContent = oran>=80?'🎯':oran>=60?'👁️':'💪';
+  document.getElementById('sonucBaslik').textContent = oran>=80?'MÜKEMMEL!':oran>=60?'İYİ İŞ!':'DEVAM ET!';
+  document.getElementById('sDogru').textContent = G.dogru;
+  document.getElementById('sYanlis').textContent = G.yanlis;
+  document.getElementById('sPuan').textContent = G.puan;
+  showScreen('screenSonuc');
+}
+
+function tekrarOyna(){ oyunuBaslat(); }
+function menuye(){ cancelAnimationFrame(G.animId); clearInterval(G.sureInterval); showScreen('screenMenu'); }
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function rastgele(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function karistir(arr){ for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr; }
+</script>
+</body>
+</html>
