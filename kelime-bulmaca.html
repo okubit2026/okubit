@@ -303,13 +303,11 @@ function hucreClick(e){
   const r = parseInt(e.target.dataset.r);
   const c = parseInt(e.target.dataset.c);
 
-  // Zaten bulunmuş mu?
   if(e.target.classList.contains('bulundu')) return;
 
-  // Seçili listede var mı?
+  // Zaten seçili mi? Son hücreyi kaldır
   const zatenSecili = G.secili.findIndex(s=>s.r===r&&s.c===c);
   if(zatenSecili >= 0){
-    // Seçimi kaldır (sadece son hücreyi kaldırabilir)
     if(zatenSecili === G.secili.length-1){
       G.secili.pop();
       e.target.classList.remove('secili');
@@ -317,20 +315,24 @@ function hucreClick(e){
     return;
   }
 
-  // Seçim geçerli mi? (önceki hücreye bitişik olmalı)
   if(G.secili.length > 0){
     const son = G.secili[G.secili.length-1];
     const dr = r - son.r;
     const dc = c - son.c;
-    // Sadece düz çizgi üzerinde olmalı
-    if(Math.abs(dr)>1||Math.abs(dc)>1) return;
-    // Yön tutarlı olmalı
-    if(G.secili.length > 1){
+
+    // Bitişik olmalı
+    if(Math.abs(dr)>1||Math.abs(dc)>1){ secimiSifirla(); return; }
+
+    // Yön tutarlılığı - 2. hücreden itibaren kontrol et
+    if(G.secili.length >= 2){
       const ilk = G.secili[0];
-      const beklenenDr = Math.sign(son.r - ilk.r) || Math.sign(dr);
-      const beklenenDc = Math.sign(son.c - ilk.c) || Math.sign(dc);
-      if(dr !== 0 && dr !== beklenenDr) return;
-      if(dc !== 0 && dc !== beklenenDc) return;
+      const ikinci = G.secili[1];
+      const yonDr = Math.sign(ikinci.r - ilk.r);
+      const yonDc = Math.sign(ikinci.c - ilk.c);
+      if(Math.sign(dr) !== yonDr && dr !== 0){ secimiSifirla(); return; }
+      if(Math.sign(dc) !== yonDc && dc !== 0){ secimiSifirla(); return; }
+      if(yonDr === 0 && dr !== 0){ secimiSifirla(); return; }
+      if(yonDc === 0 && dc !== 0){ secimiSifirla(); return; }
     }
   }
 
@@ -342,7 +344,6 @@ function hucreClick(e){
   const bulunanKelime = G.kelimeler.find(k=>k===seciliMetin&&!G.bulunan.includes(k));
 
   if(bulunanKelime){
-    // Doğru!
     G.bulunan.push(bulunanKelime);
     G.secili.forEach(s=>{
       const el = document.querySelector('.hucre[data-r="'+s.r+'"][data-c="'+s.c+'"]');
@@ -355,10 +356,15 @@ function hucreClick(e){
     document.getElementById('hudBulunan').textContent = G.bulunan.length+'/'+G.kelimeler.length;
     kelimeListesiGuncelle();
     if(G.bulunan.length === G.kelimeler.length) oyunuBitir();
-  } else if(seciliMetin.length >= 14){
-    // Çok uzun, yanlış
-    yanlis();
   }
+}
+
+function secimiSifirla(){
+  G.secili.forEach(s=>{
+    const el = document.querySelector('.hucre[data-r="'+s.r+'"][data-c="'+s.c+'"]');
+    if(el) el.classList.remove('secili');
+  });
+  G.secili = [];
 }
 
 function yanlis(){
