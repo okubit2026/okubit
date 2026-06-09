@@ -300,54 +300,50 @@ function izgaraCiz(){
 }
 
 function hucreClick(e){
-  const r = parseInt(e.target.dataset.r);
-  const c = parseInt(e.target.dataset.c);
+  // Her zaman hücre elementini al (text node tıklanmış olabilir)
+  const hucre = e.target.closest('.hucre');
+  if(!hucre) return;
+  
+  const r = parseInt(hucre.dataset.r);
+  const c = parseInt(hucre.dataset.c);
 
-  if(e.target.classList.contains('bulundu')) return;
+  if(hucre.classList.contains('bulundu')) return;
 
-  // Zaten seçili mi?
+  // Zaten seçili mi? Sıfırla
   const zatenIdx = G.secili.findIndex(s=>s.r===r&&s.c===c);
-  if(zatenIdx >= 0){
-    // Seçimi tamamen sıfırla
-    secimiSifirla();
-    return;
-  }
+  if(zatenIdx >= 0){ secimiSifirla(); return; }
 
   if(G.secili.length > 0){
     const son = G.secili[G.secili.length-1];
     const dr = r - son.r;
     const dc = c - son.c;
 
-    // Bitişik değilse sıfırla ve yeni başlat
+    // Bitişik değilse sıfırla, bu hücreden başlat
     if(Math.abs(dr)>1||Math.abs(dc)>1){
       secimiSifirla();
-      // Yeni seçimi bu hücreden başlat
       G.secili.push({r,c});
-      e.target.classList.add('secili');
+      hucre.classList.add('secili');
       return;
     }
 
-    // Yön kontrolü - sadece 2+ hücre seçiliyse
+    // 2+ hücre seçiliyse yön kontrolü
     if(G.secili.length >= 2){
       const ilk = G.secili[0];
       const ikinci = G.secili[1];
       const yonDr = Math.sign(ikinci.r - ilk.r);
       const yonDc = Math.sign(ikinci.c - ilk.c);
-      const beklDr = Math.sign(dr);
-      const beklDc = Math.sign(dc);
-      if(beklDr !== yonDr || beklDc !== yonDc){
+      if(Math.sign(dr) !== yonDr || Math.sign(dc) !== yonDc){
         secimiSifirla();
         G.secili.push({r,c});
-        e.target.classList.add('secili');
+        hucre.classList.add('secili');
         return;
       }
     }
   }
 
   G.secili.push({r,c});
-  e.target.classList.add('secili');
+  hucre.classList.add('secili');
 
-  // Kelime kontrolü
   const seciliMetin = G.secili.map(s=>G.izgara[s.r][s.c]).join('');
   const bulunanKelime = G.kelimeler.find(k=>k===seciliMetin&&!G.bulunan.includes(k));
 
