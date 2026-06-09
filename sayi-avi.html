@@ -303,7 +303,7 @@ body::before {
 
 <script>
 const AYARLAR = {
-  1: { min:1,    max:9,    hedefSayisi:5,  toplamSayi:60,  baslikSure:null },
+  1: { min:1,    max:9,    hedefSayisi:3,  toplamSayi:9,  baslikSure:null },
   2: { min:10,   max:99,   hedefSayisi:4,  toplamSayi:50,  baslikSure:null },
   3: { min:100,  max:999,  hedefSayisi:3,  toplamSayi:40,  baslikSure:null },
   4: { min:1000, max:9999, hedefSayisi:3,  toplamSayi:35,  baslikSure:null }
@@ -345,19 +345,26 @@ function oyunuBaslat() {
 
   // Hedef sayıları oluştur (tekrarsız)
   const hedefSet = new Set();
-  while (hedefSet.size < ayar.hedefSayisi) {
+  let deneme = 0;
+  while (hedefSet.size < ayar.hedefSayisi && deneme < 1000) {
     hedefSet.add(rastgele(ayar.min, ayar.max));
+    deneme++;
   }
   G.hedefler = [...hedefSet];
 
-  // Tüm sayıları oluştur (hedefler dahil)
-  const tumSayilar = new Set([...G.hedefler]);
-  while (tumSayilar.size < ayar.toplamSayi) {
-    tumSayilar.add(rastgele(ayar.min, ayar.max));
+  // Tüm sayıları oluştur - dizi kullan, tekrar edebilir
+  const tumSayilar = [...G.hedefler];
+  // Her hedeften 2-3 tane ekle (daha gerçekçi)
+  G.hedefler.forEach(h => {
+    for (let i = 0; i < 2; i++) tumSayilar.push(h);
+  });
+  // Geriye kalanı rastgele doldur
+  while (tumSayilar.length < ayar.toplamSayi) {
+    tumSayilar.push(rastgele(ayar.min, ayar.max));
   }
 
   // Karıştır
-  G.sayilar = karıstir([...tumSayilar]);
+  G.sayilar = karıstir(tumSayilar);
 
   // Ekranı güncelle
   document.getElementById('hudAsama').textContent = G.asama + '. Aşama';
@@ -398,28 +405,18 @@ function sayiyaTıkla(e) {
   const hedef = G.hedefler[G.mevcutHedefIndex];
 
   if (sayi === hedef) {
-    // Doğru!
+    // Doğru! Sadece bu tıklanan elementi işaretle
     el.classList.add('bulunan');
     el.removeEventListener('click', sayiyaTıkla);
     G.bulunanlar++;
     G.mevcutHedefIndex++;
 
-    // Tüm aynı sayıları da bul
-    document.querySelectorAll('.sayi-item').forEach(item => {
-      if (parseInt(item.dataset.sayi) === sayi && !item.classList.contains('bulunan')) {
-        item.classList.add('bulunan');
-        item.removeEventListener('click', sayiyaTıkla);
-      }
-    });
-
     document.getElementById('hudBulunan').textContent = G.bulunanlar + '/' + G.hedefler.length;
     ilerlemeGuncelle();
 
     if (G.mevcutHedefIndex >= G.hedefler.length) {
-      // Tüm hedefler bulundu
       oyunuBitir();
     } else {
-      // Sonraki hedef
       document.getElementById('hedefSayi').textContent = G.hedefler[G.mevcutHedefIndex];
     }
   } else {
