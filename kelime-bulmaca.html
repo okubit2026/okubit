@@ -305,13 +305,11 @@ function hucreClick(e){
 
   if(e.target.classList.contains('bulundu')) return;
 
-  // Zaten seçili mi? Son hücreyi kaldır
-  const zatenSecili = G.secili.findIndex(s=>s.r===r&&s.c===c);
-  if(zatenSecili >= 0){
-    if(zatenSecili === G.secili.length-1){
-      G.secili.pop();
-      e.target.classList.remove('secili');
-    }
+  // Zaten seçili mi?
+  const zatenIdx = G.secili.findIndex(s=>s.r===r&&s.c===c);
+  if(zatenIdx >= 0){
+    // Seçimi tamamen sıfırla
+    secimiSifirla();
     return;
   }
 
@@ -320,19 +318,29 @@ function hucreClick(e){
     const dr = r - son.r;
     const dc = c - son.c;
 
-    // Bitişik olmalı
-    if(Math.abs(dr)>1||Math.abs(dc)>1){ secimiSifirla(); return; }
+    // Bitişik değilse sıfırla ve yeni başlat
+    if(Math.abs(dr)>1||Math.abs(dc)>1){
+      secimiSifirla();
+      // Yeni seçimi bu hücreden başlat
+      G.secili.push({r,c});
+      e.target.classList.add('secili');
+      return;
+    }
 
-    // Yön tutarlılığı - 2. hücreden itibaren kontrol et
+    // Yön kontrolü - sadece 2+ hücre seçiliyse
     if(G.secili.length >= 2){
       const ilk = G.secili[0];
       const ikinci = G.secili[1];
       const yonDr = Math.sign(ikinci.r - ilk.r);
       const yonDc = Math.sign(ikinci.c - ilk.c);
-      if(Math.sign(dr) !== yonDr && dr !== 0){ secimiSifirla(); return; }
-      if(Math.sign(dc) !== yonDc && dc !== 0){ secimiSifirla(); return; }
-      if(yonDr === 0 && dr !== 0){ secimiSifirla(); return; }
-      if(yonDc === 0 && dc !== 0){ secimiSifirla(); return; }
+      const beklDr = Math.sign(dr);
+      const beklDc = Math.sign(dc);
+      if(beklDr !== yonDr || beklDc !== yonDc){
+        secimiSifirla();
+        G.secili.push({r,c});
+        e.target.classList.add('secili');
+        return;
+      }
     }
   }
 
