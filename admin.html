@@ -52,9 +52,16 @@ tr:hover td{background:#f8fafc}
 .asama-badge.a2{background:#f0fdf4;color:#15803d}
 .asama-badge.a3{background:#fefce8;color:#b45309}
 .asama-badge.a4{background:#fdf4ff;color:#7e22ce}
+.grup-badge{display:inline-block;padding:0.2rem 0.7rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.grup-badge.g1{background:#eff6ff;color:#1d4ed8}
+.grup-badge.g2{background:#f0fdf4;color:#15803d}
+.grup-badge.g3{background:#fefce8;color:#b45309}
+.grup-badge.g4{background:#fdf4ff;color:#7e22ce}
+.grup-badge.g5{background:#fff1f2;color:#be123c}
+.grup-badge.g6{background:#f0fdfa;color:#0f766e}
 .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
 .modal.acik{display:flex}
-.modal-kutu{background:white;border-radius:20px;padding:2rem;width:480px;max-width:90%}
+.modal-kutu{background:white;border-radius:20px;padding:2rem;width:480px;max-width:90%;max-height:90vh;overflow-y:auto}
 .modal-kutu.genis{width:680px}
 .modal-baslik{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#0a1628;margin-bottom:1.5rem}
 .form-grup{margin-bottom:1rem}
@@ -74,12 +81,10 @@ tr:hover td{background:#f8fafc}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .yukluyor{opacity:0.6;pointer-events:none}
 .bos-durum{text-align:center;padding:3rem;color:#94a3b8;font-size:0.9rem}
-.metin-onizleme{background:#f8fafc;border-radius:8px;padding:1rem;font-size:0.85rem;line-height:1.7;color:#475569;max-height:120px;overflow:hidden;text-overflow:ellipsis}
-.sekme-grup{display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:2px solid #f1f5f9;padding-bottom:0}
-.sekme{padding:0.6rem 1.2rem;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
-.sekme.aktif{color:#0a1628;border-bottom-color:#0a1628}
+.metin-onizleme{background:#f8fafc;border-radius:8px;padding:0.6rem 1rem;font-size:0.82rem;line-height:1.6;color:#475569;max-height:80px;overflow:hidden}
 .sayfa{display:none}
 .sayfa.aktif{display:block}
+.grup-aciklama{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;font-size:0.83rem;color:#0369a1;line-height:1.6}
 @media(max-width:768px){.sidebar{display:none}.icerik{margin-left:0}.ozet-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -94,6 +99,7 @@ tr:hover td{background:#f8fafc}
     <li><a href="#"><span class="ikon">🏫</span> Kurumlar</a></li>
     <div class="sidebar-alt2">İçerik</div>
     <li><a href="#" onclick="sayfaGoster('hikayeler',this)"><span class="ikon">📚</span> Hikâyeler</a></li>
+    <li><a href="#" onclick="sayfaGoster('olcum-metinleri',this)"><span class="ikon">📏</span> Ölçüm Metinleri</a></li>
     <li><a href="#"><span class="ikon">🌌</span> Egzersizler</a></li>
     <div class="sidebar-alt2">Sistem</div>
     <li><a href="#"><span class="ikon">💳</span> Ödemeler</a></li>
@@ -104,7 +110,7 @@ tr:hover td{background:#f8fafc}
 
 <div class="icerik">
 
-  <!-- GENEL BAKIŞ SAYFASI -->
+  <!-- GENEL BAKIŞ -->
   <div id="sayfa-genel" class="sayfa aktif">
     <div class="ust-bar">
       <div><h1>Genel Bakış</h1><p>Hoş geldiniz! Platform durumunuz aşağıda.</p></div>
@@ -135,7 +141,7 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <!-- ÖĞRENCİLER SAYFASI -->
+  <!-- ÖĞRENCİLER -->
   <div id="sayfa-ogrenciler" class="sayfa">
     <div class="ust-bar">
       <div><h1>Öğrenciler</h1><p>Tüm öğrenci hesaplarını buradan yönetin.</p></div>
@@ -155,14 +161,12 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <!-- HİKAYELER SAYFASI -->
+  <!-- HİKAYELER -->
   <div id="sayfa-hikayeler" class="sayfa">
     <div class="ust-bar">
       <div><h1>Hikâyeler</h1><p>Egzersiz metinlerini aşama ve güne göre yükleyin.</p></div>
       <button class="yeni-btn" onclick="modalAc('hikaye')">+ Yeni Hikâye Ekle</button>
     </div>
-
-    <!-- FİLTRE -->
     <div class="kart" style="padding:1rem 1.5rem">
       <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
         <div>
@@ -185,18 +189,48 @@ tr:hover td{background:#f8fafc}
         <span id="hikaye-sayac" style="font-size:0.82rem;color:#94a3b8;margin-left:auto"></span>
       </div>
     </div>
-
-    <!-- HİKAYE LİSTESİ -->
     <div class="kart">
-      <div id="hikaye-liste">
-        <div class="bos-durum">⏳ Hikâyeler yükleniyor...</div>
+      <div id="hikaye-liste"><div class="bos-durum">⏳ Hikâyeler yükleniyor...</div></div>
+    </div>
+  </div>
+
+  <!-- ÖLÇÜM METİNLERİ -->
+  <div id="sayfa-olcum-metinleri" class="sayfa">
+    <div class="ust-bar">
+      <div><h1>Ölçüm Metinleri</h1><p>İlk ölçüm testinde kullanılacak metinleri yaş grubuna göre yükleyin.</p></div>
+      <button class="yeni-btn" onclick="modalAc('olcum')">+ Yeni Metin Ekle</button>
+    </div>
+
+    <div class="grup-aciklama">
+      <strong>Yaş Grubu Rehberi:</strong> Grup 1 → 1-2. Sınıf &nbsp;|&nbsp; Grup 2 → 3-4. Sınıf &nbsp;|&nbsp; Grup 3 → 5-6. Sınıf &nbsp;|&nbsp; Grup 4 → 7-8. Sınıf &nbsp;|&nbsp; Grup 5 → Lise (9-12. Sınıf) &nbsp;|&nbsp; Grup 6 → Yetişkin (Lise Mezunu+)
+    </div>
+
+    <div class="kart" style="padding:1rem 1.5rem">
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <div>
+          <label style="font-size:0.8rem;font-weight:600;color:#64748b;margin-right:0.5rem">Yaş Grubu:</label>
+          <select id="filtre-olcum-grup" onchange="olcumMetinleriYukle()" style="padding:0.4rem 0.8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none">
+            <option value="">Tümü</option>
+            <option value="1">Grup 1 – 1-2. Sınıf</option>
+            <option value="2">Grup 2 – 3-4. Sınıf</option>
+            <option value="3">Grup 3 – 5-6. Sınıf</option>
+            <option value="4">Grup 4 – 7-8. Sınıf</option>
+            <option value="5">Grup 5 – Lise</option>
+            <option value="6">Grup 6 – Yetişkin</option>
+          </select>
+        </div>
+        <span id="olcum-sayac" style="font-size:0.82rem;color:#94a3b8;margin-left:auto"></span>
       </div>
+    </div>
+
+    <div class="kart">
+      <div id="olcum-liste"><div class="bos-durum">⏳ Metinler yükleniyor...</div></div>
     </div>
   </div>
 
 </div>
 
-<!-- ÖĞRENCİ EKLEME MODALI -->
+<!-- ÖĞRENCİ MODALI -->
 <div class="modal" id="modal-ogrenci">
   <div class="modal-kutu">
     <div class="modal-baslik">➕ Yeni Öğrenci Ekle</div>
@@ -220,7 +254,7 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
-<!-- HİKAYE EKLEME MODALI -->
+<!-- HİKAYE MODALI -->
 <div class="modal" id="modal-hikaye">
   <div class="modal-kutu genis">
     <div class="modal-baslik">📚 Yeni Hikâye Ekle</div>
@@ -261,12 +295,95 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
-<!-- BİLDİRİM -->
+<!-- ÖLÇÜM METNİ MODALI -->
+<div class="modal" id="modal-olcum">
+  <div class="modal-kutu genis">
+    <div class="modal-baslik">📏 Yeni Ölçüm Metni Ekle</div>
+    <div class="form-grid">
+      <div class="form-grup">
+        <label>Yaş Grubu</label>
+        <select id="o-grup">
+          <option value="1">Grup 1 – 1-2. Sınıf</option>
+          <option value="2">Grup 2 – 3-4. Sınıf</option>
+          <option value="3">Grup 3 – 5-6. Sınıf</option>
+          <option value="4">Grup 4 – 7-8. Sınıf</option>
+          <option value="5">Grup 5 – Lise (9-12. Sınıf)</option>
+          <option value="6">Grup 6 – Yetişkin (Lise Mezunu+)</option>
+        </select>
+      </div>
+      <div class="form-grup">
+        <label>Kelime Sayısı</label>
+        <input type="number" id="o-kelime" placeholder="Örn: 150" min="50" max="600">
+      </div>
+    </div>
+    <div class="form-grup">
+      <label>Metin Başlığı</label>
+      <input type="text" id="o-baslik" placeholder="Metnin başlığı...">
+    </div>
+    <div class="form-grup">
+      <label>Metin</label>
+      <textarea id="o-metin" placeholder="Ölçüm metnini buraya yapıştırın..." oninput="olcumKelimeSay()"></textarea>
+      <div class="sayac" id="olcum-kelime-sayac">0 kelime</div>
+    </div>
+    <div class="modal-btn-grup">
+      <button class="btn-iptal" onclick="modalKapat('olcum')">İptal</button>
+      <button class="btn-kaydet" id="btn-olcum-kaydet" onclick="olcumMetniKaydet()">💾 Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ÖLÇÜM METNİ DÜZENLEME MODALI -->
+<div class="modal" id="modal-olcum-duzenle">
+  <div class="modal-kutu genis">
+    <div class="modal-baslik">✏️ Ölçüm Metni Düzenle</div>
+    <input type="hidden" id="od-id">
+    <div class="form-grid">
+      <div class="form-grup">
+        <label>Yaş Grubu</label>
+        <select id="od-grup">
+          <option value="1">Grup 1 – 1-2. Sınıf</option>
+          <option value="2">Grup 2 – 3-4. Sınıf</option>
+          <option value="3">Grup 3 – 5-6. Sınıf</option>
+          <option value="4">Grup 4 – 7-8. Sınıf</option>
+          <option value="5">Grup 5 – Lise (9-12. Sınıf)</option>
+          <option value="6">Grup 6 – Yetişkin (Lise Mezunu+)</option>
+        </select>
+      </div>
+      <div class="form-grup">
+        <label>Kelime Sayısı</label>
+        <input type="number" id="od-kelime" placeholder="Örn: 150" min="50" max="600">
+      </div>
+    </div>
+    <div class="form-grup">
+      <label>Metin Başlığı</label>
+      <input type="text" id="od-baslik" placeholder="Metnin başlığı...">
+    </div>
+    <div class="form-grup">
+      <label>Metin</label>
+      <textarea id="od-metin" placeholder="Ölçüm metnini buraya yapıştırın..." oninput="duzenleKelimeSay()"></textarea>
+      <div class="sayac" id="duzenle-kelime-sayac">0 kelime</div>
+    </div>
+    <div class="modal-btn-grup">
+      <button class="btn-iptal" onclick="modalKapat('olcum-duzenle')">İptal</button>
+      <button class="btn-kaydet" id="btn-olcum-guncelle" onclick="olcumMetniGuncelle()">💾 Güncelle</button>
+    </div>
+  </div>
+</div>
+
 <div class="bildirim" id="bildirim"></div>
 
 <script>
 const SUPABASE_URL = 'https://sfyjnwhblxldrzbrnyva.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmeWpud2hibHhsZHJ6YnJueXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDc4NTYsImV4cCI6MjA5NjMyMzg1Nn0.3mrQ2JSX4InY89iUnoJUCnWefxHXHjgM059PeLQedew';
+
+const GRUP_ADLARI = {
+  1: 'Grup 1 – 1-2. Sınıf',
+  2: 'Grup 2 – 3-4. Sınıf',
+  3: 'Grup 3 – 5-6. Sınıf',
+  4: 'Grup 4 – 7-8. Sınıf',
+  5: 'Grup 5 – Lise',
+  6: 'Grup 6 – Yetişkin'
+};
 
 async function supabase(metod, tablo, veri, filtre) {
   let url = SUPABASE_URL + '/rest/v1/' + tablo;
@@ -281,10 +398,7 @@ async function supabase(metod, tablo, veri, filtre) {
     },
     body: veri ? JSON.stringify(veri) : undefined
   });
-  if (!res.ok) {
-    const hata = await res.json();
-    throw new Error(hata.message || 'Hata oluştu');
-  }
+  if (!res.ok) { const h = await res.json(); throw new Error(h.message || 'Hata'); }
   return metod === 'DELETE' ? true : res.json();
 }
 
@@ -294,12 +408,10 @@ function sayfaGoster(sayfa, link) {
   document.getElementById('sayfa-' + sayfa).classList.add('aktif');
   if (link) link.classList.add('aktif');
   if (sayfa === 'hikayeler') hikayeleriYukle();
+  if (sayfa === 'olcum-metinleri') olcumMetinleriYukle();
 }
 
-function modalAc(tip) {
-  document.getElementById('modal-' + tip).classList.add('acik');
-}
-
+function modalAc(tip) { document.getElementById('modal-' + tip).classList.add('acik'); }
 function modalKapat(tip) {
   document.getElementById('modal-' + tip).classList.remove('acik');
   if (tip === 'hikaye') {
@@ -307,6 +419,12 @@ function modalKapat(tip) {
     document.getElementById('h-metin').value = '';
     document.getElementById('h-kelime').value = '';
     document.getElementById('kelime-sayac').textContent = '0 kelime';
+  }
+  if (tip === 'olcum') {
+    document.getElementById('o-baslik').value = '';
+    document.getElementById('o-metin').value = '';
+    document.getElementById('o-kelime').value = '';
+    document.getElementById('olcum-kelime-sayac').textContent = '0 kelime';
   }
 }
 
@@ -319,10 +437,24 @@ function bildirimGoster(mesaj, tip) {
 }
 
 function kelimeSay() {
-  const metin = document.getElementById('h-metin').value.trim();
-  const sayac = metin ? metin.split(/\s+/).length : 0;
-  document.getElementById('kelime-sayac').textContent = sayac + ' kelime';
-  document.getElementById('h-kelime').value = sayac;
+  const m = document.getElementById('h-metin').value.trim();
+  const s = m ? m.split(/\s+/).length : 0;
+  document.getElementById('kelime-sayac').textContent = s + ' kelime';
+  document.getElementById('h-kelime').value = s;
+}
+
+function olcumKelimeSay() {
+  const m = document.getElementById('o-metin').value.trim();
+  const s = m ? m.split(/\s+/).length : 0;
+  document.getElementById('olcum-kelime-sayac').textContent = s + ' kelime';
+  document.getElementById('o-kelime').value = s;
+}
+
+function duzenleKelimeSay() {
+  const m = document.getElementById('od-metin').value.trim();
+  const s = m ? m.split(/\s+/).length : 0;
+  document.getElementById('duzenle-kelime-sayac').textContent = s + ' kelime';
+  document.getElementById('od-kelime').value = s;
 }
 
 async function hikayeKaydet() {
@@ -331,31 +463,17 @@ async function hikayeKaydet() {
   const baslik = document.getElementById('h-baslik').value.trim();
   const metin = document.getElementById('h-metin').value.trim();
   const kelime = document.getElementById('h-kelime').value;
-
-  if (!baslik) { bildirimGoster('⚠️ Hikâye başlığı boş olamaz!', 'hata'); return; }
-  if (!metin) { bildirimGoster('⚠️ Hikâye metni boş olamaz!', 'hata'); return; }
-
+  if (!baslik) { bildirimGoster('⚠️ Başlık boş olamaz!', 'hata'); return; }
+  if (!metin) { bildirimGoster('⚠️ Metin boş olamaz!', 'hata'); return; }
   const btn = document.getElementById('btn-hikaye-kaydet');
   btn.textContent = '⏳ Kaydediliyor...';
-  btn.classList.add('yukluyor');
-
   try {
-    await supabase('POST', 'hikayeler', {
-      asama: parseInt(asama),
-      gun: parseInt(gun),
-      baslik: baslik,
-      metin: metin,
-      kelime_sayisi: parseInt(kelime) || 0
-    });
-    bildirimGoster('✅ Hikâye başarıyla kaydedildi!', 'basari');
+    await supabase('POST', 'hikayeler', { asama: parseInt(asama), gun: parseInt(gun), baslik, metin, kelime_sayisi: parseInt(kelime)||0 });
+    bildirimGoster('✅ Hikâye kaydedildi!', 'basari');
     modalKapat('hikaye');
     hikayeleriYukle();
-  } catch(e) {
-    bildirimGoster('❌ Hata: ' + e.message, 'hata');
-  }
-
+  } catch(e) { bildirimGoster('❌ ' + e.message, 'hata'); }
   btn.textContent = '💾 Kaydet';
-  btn.classList.remove('yukluyor');
 }
 
 async function hikayeSil(id) {
@@ -364,55 +482,129 @@ async function hikayeSil(id) {
     await supabase('DELETE', 'hikayeler', null, 'id=eq.' + id);
     bildirimGoster('🗑️ Hikâye silindi.', 'basari');
     hikayeleriYukle();
-  } catch(e) {
-    bildirimGoster('❌ Silinemedi: ' + e.message, 'hata');
-  }
+  } catch(e) { bildirimGoster('❌ ' + e.message, 'hata'); }
 }
 
 async function hikayeleriYukle() {
   const liste = document.getElementById('hikaye-liste');
   liste.innerHTML = '<div class="bos-durum">⏳ Yükleniyor...</div>';
-
   let filtre = 'order=asama,gun';
   const asama = document.getElementById('filtre-asama').value;
   const gun = document.getElementById('filtre-gun').value;
   if (asama) filtre += '&asama=eq.' + asama;
   if (gun) filtre += '&gun=eq.' + gun;
-
   try {
     const hikayeler = await supabase('GET', 'hikayeler', null, filtre);
     document.getElementById('hikaye-sayac').textContent = hikayeler.length + ' hikâye';
-
-    if (hikayeler.length === 0) {
-      liste.innerHTML = '<div class="bos-durum">📭 Henüz hikâye eklenmemiş.<br><small>Sağ üstteki "+ Yeni Hikâye Ekle" butonunu kullanın.</small></div>';
-      return;
-    }
-
-    const asamaRenk = {'1':'a1','2':'a2','3':'a3','4':'a4'};
+    if (hikayeler.length === 0) { liste.innerHTML = '<div class="bos-durum">📭 Henüz hikâye eklenmemiş.</div>'; return; }
+    const renkler = {'1':'a1','2':'a2','3':'a3','4':'a4'};
     liste.innerHTML = '<table><thead><tr><th>Aşama</th><th>Gün</th><th>Başlık</th><th>Kelime</th><th>Eklenme</th><th>İşlem</th></tr></thead><tbody id="hikaye-tbody"></tbody></table>';
-
     const tbody = document.getElementById('hikaye-tbody');
     hikayeler.forEach(h => {
       const tarih = h.created_at ? new Date(h.created_at).toLocaleDateString('tr-TR') : '-';
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><span class="asama-badge ${asamaRenk[h.asama]}">${h.asama}. Aşama</span></td>
-        <td>${h.gun}. Gün</td>
-        <td><strong>${h.baslik}</strong><div class="metin-onizleme" style="margin-top:0.4rem">${h.metin.substring(0,120)}...</div></td>
-        <td>${h.kelime_sayisi || '-'}</td>
-        <td>${tarih}</td>
-        <td><button class="islem-btn sil" onclick="hikayeSil(${h.id})">🗑️ Sil</button></td>
-      `;
+      tr.innerHTML = `<td><span class="asama-badge ${renkler[h.asama]}">${h.asama}. Aşama</span></td><td>${h.gun}. Gün</td><td><strong>${h.baslik}</strong><div class="metin-onizleme" style="margin-top:0.3rem">${h.metin.substring(0,100)}...</div></td><td>${h.kelime_sayisi||'-'}</td><td>${tarih}</td><td><button class="islem-btn sil" onclick="hikayeSil(${h.id})">🗑️ Sil</button></td>`;
       tbody.appendChild(tr);
     });
-  } catch(e) {
-    liste.innerHTML = '<div class="bos-durum">❌ Yüklenemedi: ' + e.message + '<br><small>Supabase\'de "hikayeler" tablosunun oluşturulduğundan emin olun.</small></div>';
-  }
+  } catch(e) { liste.innerHTML = '<div class="bos-durum">❌ ' + e.message + '</div>'; }
+}
+
+// ÖLÇÜM METİNLERİ
+async function olcumMetniKaydet() {
+  const grup = document.getElementById('o-grup').value;
+  const baslik = document.getElementById('o-baslik').value.trim();
+  const metin = document.getElementById('o-metin').value.trim();
+  const kelime = document.getElementById('o-kelime').value;
+  if (!baslik) { bildirimGoster('⚠️ Başlık boş olamaz!', 'hata'); return; }
+  if (!metin) { bildirimGoster('⚠️ Metin boş olamaz!', 'hata'); return; }
+  const btn = document.getElementById('btn-olcum-kaydet');
+  btn.textContent = '⏳ Kaydediliyor...';
+  try {
+    await supabase('POST', 'olcum_metinleri', { yas_grubu: parseInt(grup), baslik, metin, kelime_sayisi: parseInt(kelime)||0 });
+    bildirimGoster('✅ Metin kaydedildi!', 'basari');
+    modalKapat('olcum');
+    olcumMetinleriYukle();
+  } catch(e) { bildirimGoster('❌ ' + e.message, 'hata'); }
+  btn.textContent = '💾 Kaydet';
+}
+
+async function olcumMetniSil(id) {
+  if (!confirm('Bu metni silmek istediğinize emin misiniz?')) return;
+  try {
+    await supabase('DELETE', 'olcum_metinleri', null, 'id=eq.' + id);
+    bildirimGoster('🗑️ Metin silindi.', 'basari');
+    olcumMetinleriYukle();
+  } catch(e) { bildirimGoster('❌ ' + e.message, 'hata'); }
+}
+
+function olcumMetniDuzenle(id, grup, baslik, metin, kelime) {
+  document.getElementById('od-id').value = id;
+  document.getElementById('od-grup').value = grup;
+  document.getElementById('od-baslik').value = baslik;
+  document.getElementById('od-metin').value = metin;
+  document.getElementById('od-kelime').value = kelime;
+  document.getElementById('duzenle-kelime-sayac').textContent = kelime + ' kelime';
+  modalAc('olcum-duzenle');
+}
+
+async function olcumMetniGuncelle() {
+  const id = document.getElementById('od-id').value;
+  const grup = document.getElementById('od-grup').value;
+  const baslik = document.getElementById('od-baslik').value.trim();
+  const metin = document.getElementById('od-metin').value.trim();
+  const kelime = document.getElementById('od-kelime').value;
+  if (!baslik) { bildirimGoster('⚠️ Başlık boş olamaz!', 'hata'); return; }
+  if (!metin) { bildirimGoster('⚠️ Metin boş olamaz!', 'hata'); return; }
+  const btn = document.getElementById('btn-olcum-guncelle');
+  btn.textContent = '⏳ Güncelleniyor...';
+  try {
+    await supabase('PATCH', 'olcum_metinleri', { yas_grubu: parseInt(grup), baslik, metin, kelime_sayisi: parseInt(kelime)||0 }, 'id=eq.' + id);
+    bildirimGoster('✅ Metin güncellendi!', 'basari');
+    modalKapat('olcum-duzenle');
+    olcumMetinleriYukle();
+  } catch(e) { bildirimGoster('❌ ' + e.message, 'hata'); }
+  btn.textContent = '💾 Güncelle';
+}
+
+async function olcumMetinleriYukle() {
+  const liste = document.getElementById('olcum-liste');
+  liste.innerHTML = '<div class="bos-durum">⏳ Yükleniyor...</div>';
+  let filtre = 'order=yas_grubu';
+  const grup = document.getElementById('filtre-olcum-grup').value;
+  if (grup) filtre += '&yas_grubu=eq.' + grup;
+  try {
+    const metinler = await supabase('GET', 'olcum_metinleri', null, filtre);
+    document.getElementById('olcum-sayac').textContent = metinler.length + ' metin';
+    if (metinler.length === 0) {
+      liste.innerHTML = '<div class="bos-durum">📭 Henüz metin eklenmemiş.<br><small>Sağ üstteki "+ Yeni Metin Ekle" butonunu kullanın.</small></div>';
+      return;
+    }
+    const renkler = {'1':'g1','2':'g2','3':'g3','4':'g4','5':'g5','6':'g6'};
+    liste.innerHTML = '<table><thead><tr><th>Grup</th><th>Başlık</th><th>Kelime</th><th>Eklenme</th><th>İşlem</th></tr></thead><tbody id="olcum-tbody"></tbody></table>';
+    const tbody = document.getElementById('olcum-tbody');
+    metinler.forEach(m => {
+      const tarih = m.created_at ? new Date(m.created_at).toLocaleDateString('tr-TR') : '-';
+      const tr = document.createElement('tr');
+      const metinGuveli = m.metin.replace(/'/g, "\\'");
+      const baslikGuveli = m.baslik.replace(/'/g, "\\'");
+      tr.innerHTML = `
+        <td><span class="grup-badge ${renkler[m.yas_grubu]}">${GRUP_ADLARI[m.yas_grubu]}</span></td>
+        <td><strong>${m.baslik}</strong><div class="metin-onizleme" style="margin-top:0.3rem">${m.metin.substring(0,100)}...</div></td>
+        <td>${m.kelime_sayisi||'-'}</td>
+        <td>${tarih}</td>
+        <td style="white-space:nowrap">
+          <button class="islem-btn duzenle" onclick="olcumMetniDuzenle(${m.id},${m.yas_grubu},'${baslikGuveli}','${metinGuveli}',${m.kelime_sayisi||0})" style="margin-right:4px">✏️ Düzenle</button>
+          <button class="islem-btn sil" onclick="olcumMetniSil(${m.id})">🗑️ Sil</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  } catch(e) { liste.innerHTML = '<div class="bos-durum">❌ ' + e.message + '</div>'; }
 }
 
 function ara(q) {
-  var s = document.querySelectorAll('#tablo-govde tr');
-  s.forEach(function(r){ r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase()) ? '' : 'none' });
+  document.querySelectorAll('#tablo-govde tr').forEach(r => {
+    r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
 }
 </script>
 </body>
