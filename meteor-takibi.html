@@ -101,7 +101,6 @@ body {
 .countdown-big { font-family:'Orbitron',sans-serif; font-size:3rem; font-weight:900; color:var(--gold); text-shadow:0 0 30px rgba(255,215,0,0.5); animation:countPulse 0.9s ease-in-out infinite; }
 @keyframes countPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
 
-/* SEÇİM ZAMANI mesajı - üstte sabit kutu */
 .select-banner { position:absolute; top:60px; left:50%; transform:translateX(-50%); background:rgba(6,13,26,0.92); border:1.5px solid rgba(0,212,255,0.5); border-radius:14px; padding:10px 24px; text-align:center; z-index:25; pointer-events:none; white-space:nowrap; }
 .select-banner-title { font-family:'Orbitron',sans-serif; font-size:0.82rem; font-weight:700; color:var(--gold); letter-spacing:1px; }
 .select-banner-sub { font-size:0.75rem; color:var(--grey); margin-top:2px; }
@@ -168,7 +167,7 @@ body {
     </div>
 
     <button class="start-btn" onclick="startGame()">BAŞLAT ▶</button>
-    <a href="panel.html" style="margin-top:12px;color:rgba(106,138,170,0.8);font-size:0.8rem;text-decoration:none;display:block;text-align:center;padding:8px;">← Panele Dön</a>
+    <a id="backBtn" href="#" style="margin-top:12px;color:rgba(106,138,170,0.8);font-size:0.8rem;text-decoration:none;display:block;text-align:center;padding:8px;">← Panele Dön</a>
   </div>
 
   <!-- OYUN -->
@@ -190,7 +189,6 @@ body {
         <div class="countdown-big" id="oCount" style="display:none"></div>
       </div>
     </div>
-    <!-- Seçim banneri - overlay yerine sabit üst bant -->
     <div class="select-banner" id="selectBanner" style="display:none">
       <div class="select-banner-title">🎯 HANGİSİYDİ?</div>
       <div class="select-banner-sub" id="selectBannerSub">Takip ettiğin meteoru seç</div>
@@ -219,6 +217,13 @@ body {
 </div>
 
 <script>
+// ── PANELe DÖNÜŞ URL'İ — ?from=admin ise admin, değilse öğrenci paneli ──
+(function() {
+  const from = new URLSearchParams(window.location.search).get('from');
+  const backUrl = from === 'admin' ? 'admin.html' : 'ogrenci-panel.html';
+  document.getElementById('backBtn').href = backUrl;
+})();
+
 // ── YILDIZ ARKA PLAN ──
 (function() {
   const c = document.getElementById('bgCanvas');
@@ -252,8 +257,7 @@ const LEVELS = {
   5:{count:12,speedMul:2.4,dur:20000}
 };
 
-// Takip sırasında tüm meteorlar AYNI RENK - farklı bir renk kullan
-const TRACK_COLOR = '#aabbcc'; // Takip rengi (gri-mavi, nötr)
+const TRACK_COLOR = '#aabbcc';
 const TARGET_COLORS = ['#00d4ff','#ffd700','#00ff88','#ff4466','#aa44ff','#ff8844','#ffffff','#44ffff'];
 const COLOR_NAMES = {'#00d4ff':'Mavi','#ffd700':'Sarı','#00ff88':'Yeşil','#ff4466':'Kırmızı','#aa44ff':'Mor','#ff8844':'Turuncu','#ffffff':'Beyaz','#44ffff':'Camgöbeği'};
 
@@ -281,8 +285,7 @@ function makeMeteor(idx, color) {
 }
 
 function updateMeteor(m) {
-  if (m.frozen) return; // DONDURULMUŞ — hareket etme
-
+  if (m.frozen) return;
   m.changeTimer++;
   if (m.changeTimer > m.changePeriod) {
     const angle = Math.random()*Math.PI*2;
@@ -303,7 +306,6 @@ function updateMeteor(m) {
 function drawFrame() {
   gctx.clearRect(0,0,G.canvasW,G.canvasH);
   G.meteors.forEach(m => {
-    // Kuyruk - dondurulmuşsa kuyruk çizme
     if (!m.frozen && m.tail.length>1) {
       for (let i=1; i<m.tail.length; i++) {
         const t = i/m.tail.length;
@@ -316,7 +318,6 @@ function drawFrame() {
         gctx.stroke();
       }
     }
-    // Ana meteor gövdesi
     gctx.beginPath();
     gctx.arc(m.x,m.y,m.size,0,Math.PI*2);
     const grad = gctx.createRadialGradient(m.x-m.size*0.3,m.y-m.size*0.3,0,m.x,m.y,m.size);
@@ -325,8 +326,6 @@ function drawFrame() {
     grad.addColorStop(1,hexAlpha(m.displayColor,0.3));
     gctx.fillStyle = grad;
     gctx.fill();
-
-    // Seçim aşamasında numara etiketi
     if (G.phase==='select') {
       gctx.font = 'bold 13px Orbitron,monospace';
       gctx.textAlign = 'center';
@@ -367,7 +366,6 @@ function initMeteors() {
     const color = TARGET_COLORS[i%TARGET_COLORS.length];
     G.meteors.push(makeMeteor(i,color));
   }
-  // Hedef seç
   G.target = [];
   if (G.mod===2) {
     const a=Math.floor(Math.random()*G.meteors.length);
@@ -388,7 +386,6 @@ function showOverlay() {
   document.getElementById('hudLv').textContent=G.level;
   document.getElementById('hudStreak').textContent=G.streak+' 🔥';
 
-  // Hedef açıklaması
   let desc = '';
   if (G.mod===1||G.mod===4) {
     const t=G.meteors[G.target[0]]; const colorName=COLOR_NAMES[t.color]||'';
@@ -427,10 +424,7 @@ function startTracking() {
   const lv=LEVELS[G.level];
   G.timerStart=Date.now(); G.timerDur=lv.dur;
   document.getElementById('timerBarWrap').style.display='block';
-
-  // Takip başlayınca TÜM METEORLAR AYNI RENK (gri-mavi nötr)
   G.meteors.forEach(m => { m.displayColor=TRACK_COLOR; m.tail=[]; });
-
   setTimeout(()=>stopTracking(),lv.dur);
 }
 
@@ -438,25 +432,16 @@ function stopTracking() {
   G.phase='select';
   document.getElementById('hudPhase').textContent='Seç!';
   document.getElementById('timerBarWrap').style.display='none';
-
-  // TÜM METEORLARI DONDUR
   G.meteors.forEach(m => { m.frozen=true; m.tail=[]; });
-
-  // Canvas'ı tıklanabilir yap
   gc.style.pointerEvents = 'auto';
   gc.style.cursor = 'crosshair';
-
-  // Overlay'i kapat, seçim bannerını göster
   document.getElementById('gameOverlay').style.display='none';
   document.getElementById('selectBanner').style.display='block';
-
   if (G.mod===2) {
     document.getElementById('selectBannerSub').textContent='İlk takip ettiğin meteoru seç';
   } else {
     document.getElementById('selectBannerSub').textContent='Takip ettiğin meteoru seç';
   }
-
-  // Tıklama aktif et
   gc.onclick=handleClick; gc.ontouchend=handleTouch;
 }
 
@@ -472,7 +457,6 @@ function processTap(x,y) {
 
   if (G.mod===2) {
     selectCount++; selectedTargets.push(closest.idx);
-    // Seçileni işaretle
     gctx.beginPath(); gctx.arc(closest.x,closest.y,closest.size+10,0,Math.PI*2);
     gctx.strokeStyle=hexAlpha('#ffd700',0.8); gctx.lineWidth=3; gctx.stroke();
     if (selectCount>=2) {
@@ -495,9 +479,7 @@ function endRound(correct) {
   loopActive=false;
   cancelAnimationFrame(G.animId);
   document.getElementById('selectBanner').style.display='none';
-  gc.style.pointerEvents = 'none'; // Canvas'ı tekrar devre dışı bırak
-
-  // Reveal: hedef rengi geri ver, halka çiz
+  gc.style.pointerEvents = 'none';
   G.meteors.forEach(m => { m.displayColor=m.isTarget?m.color:'#334455'; });
   drawReveal(correct);
 
@@ -517,24 +499,19 @@ function endRound(correct) {
 }
 
 function drawReveal(correct) {
-  // Önce tüm meteorları çiz (renkler geri verilmiş halde)
   drawFrame();
-  // Hedef meteorlara halka ekle
   G.meteors.forEach(m => {
     if (m.isTarget) {
-      // Büyük parlayan halka
       gctx.beginPath();
       gctx.arc(m.x,m.y,m.size+16,0,Math.PI*2);
       gctx.strokeStyle=correct?hexAlpha('#00ff88',0.9):hexAlpha('#ff4466',0.9);
       gctx.lineWidth=4;
       gctx.stroke();
-      // Dış halo
       gctx.beginPath();
       gctx.arc(m.x,m.y,m.size+26,0,Math.PI*2);
       gctx.strokeStyle=correct?hexAlpha('#00ff88',0.3):hexAlpha('#ff4466',0.3);
       gctx.lineWidth=8;
       gctx.stroke();
-      // İşaret
       gctx.font='bold 16px Orbitron,monospace';
       gctx.textAlign='center';
       gctx.fillStyle=correct?'#00ff88':'#ff4466';
