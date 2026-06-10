@@ -85,8 +85,6 @@ tr:hover td{background:#f8fafc}
 .sayfa{display:none}
 .sayfa.aktif{display:block}
 .grup-aciklama{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;font-size:0.83rem;color:#0369a1;line-height:1.6}
-
-/* EGZERSİZ KARTLARI */
 .egzersiz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;margin-bottom:1.5rem}
 .egzersiz-kart{background:white;border-radius:16px;padding:1.4rem 1.5rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);border:1.5px solid #f1f5f9;transition:border-color 0.2s}
 .egzersiz-kart:hover{border-color:#bfdbfe}
@@ -107,7 +105,6 @@ tr:hover td{background:#f8fafc}
 .btn-kaydet-hiz:hover{background:#dbeafe}
 .btn-kaydet-hiz.kaydedildi{background:#f0fdf4;color:#16a34a}
 .kategori-baslik{font-size:0.8rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin:1.5rem 0 0.8rem;padding-bottom:0.4rem;border-bottom:1.5px solid #f1f5f9}
-
 @media(max-width:768px){.sidebar{display:none}.icerik{margin-left:0}.ozet-grid{grid-template-columns:repeat(2,1fr)}.egzersiz-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -133,7 +130,6 @@ tr:hover td{background:#f8fafc}
 
 <div class="icerik">
 
-  <!-- GENEL BAKIŞ -->
   <div id="sayfa-genel" class="sayfa aktif">
     <div class="ust-bar">
       <div><h1>Genel Bakış</h1><p>Hoş geldiniz! Platform durumunuz aşağıda.</p></div>
@@ -164,7 +160,6 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <!-- ÖĞRENCİLER -->
   <div id="sayfa-ogrenciler" class="sayfa">
     <div class="ust-bar">
       <div><h1>Öğrenciler</h1><p>Tüm öğrenci hesaplarını buradan yönetin.</p></div>
@@ -184,7 +179,6 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <!-- HİKAYELER -->
   <div id="sayfa-hikayeler" class="sayfa">
     <div class="ust-bar">
       <div><h1>Hikâyeler</h1><p>Egzersiz metinlerini aşama ve güne göre yükleyin.</p></div>
@@ -195,11 +189,7 @@ tr:hover td{background:#f8fafc}
         <div>
           <label style="font-size:0.8rem;font-weight:600;color:#64748b;margin-right:0.5rem">Aşama:</label>
           <select id="filtre-asama" onchange="hikayeleriYukle()" style="padding:0.4rem 0.8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none">
-            <option value="">Tümü</option>
-            <option value="1">1. Aşama</option>
-            <option value="2">2. Aşama</option>
-            <option value="3">3. Aşama</option>
-            <option value="4">4. Aşama</option>
+            <option value="">Tümü</option><option value="1">1. Aşama</option><option value="2">2. Aşama</option><option value="3">3. Aşama</option><option value="4">4. Aşama</option>
           </select>
         </div>
         <div>
@@ -212,12 +202,9 @@ tr:hover td{background:#f8fafc}
         <span id="hikaye-sayac" style="font-size:0.82rem;color:#94a3b8;margin-left:auto"></span>
       </div>
     </div>
-    <div class="kart">
-      <div id="hikaye-liste"><div class="bos-durum">⏳ Hikâyeler yükleniyor...</div></div>
-    </div>
+    <div class="kart"><div id="hikaye-liste"><div class="bos-durum">⏳ Hikâyeler yükleniyor...</div></div></div>
   </div>
 
-  <!-- ÖLÇÜM METİNLERİ -->
   <div id="sayfa-olcum-metinleri" class="sayfa">
     <div class="ust-bar">
       <div><h1>Ölçüm Metinleri</h1><p>İlk ölçüm testinde kullanılacak metinleri yaş grubuna göre yükleyin.</p></div>
@@ -231,37 +218,25 @@ tr:hover td{background:#f8fafc}
         <div>
           <label style="font-size:0.8rem;font-weight:600;color:#64748b;margin-right:0.5rem">Yaş Grubu:</label>
           <select id="filtre-olcum-grup" onchange="olcumMetinleriYukle()" style="padding:0.4rem 0.8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none">
-            <option value="">Tümü</option>
-            <option value="1">Grup 1 – 1-2. Sınıf</option>
-            <option value="2">Grup 2 – 3-4. Sınıf</option>
-            <option value="3">Grup 3 – 5-6. Sınıf</option>
-            <option value="4">Grup 4 – 7-8. Sınıf</option>
-            <option value="5">Grup 5 – Lise</option>
-            <option value="6">Grup 6 – Yetişkin</option>
+            <option value="">Tümü</option><option value="1">Grup 1 – 1-2. Sınıf</option><option value="2">Grup 2 – 3-4. Sınıf</option><option value="3">Grup 3 – 5-6. Sınıf</option><option value="4">Grup 4 – 7-8. Sınıf</option><option value="5">Grup 5 – Lise</option><option value="6">Grup 6 – Yetişkin</option>
           </select>
         </div>
         <span id="olcum-sayac" style="font-size:0.82rem;color:#94a3b8;margin-left:auto"></span>
       </div>
     </div>
-    <div class="kart">
-      <div id="olcum-liste"><div class="bos-durum">⏳ Metinler yükleniyor...</div></div>
-    </div>
+    <div class="kart"><div id="olcum-liste"><div class="bos-durum">⏳ Metinler yükleniyor...</div></div></div>
   </div>
 
-  <!-- EGZERSİZLER -->
   <div id="sayfa-egzersizler" class="sayfa">
     <div class="ust-bar">
       <div><h1>Egzersizler</h1><p>Her egzersizin hızını ayarlayın ve doğrudan başlatın.</p></div>
       <button class="yeni-btn" onclick="tumHizlariKaydet()">💾 Tümünü Kaydet</button>
     </div>
-
     <div class="grup-aciklama">
       <strong>Hız Ayarı:</strong> Slider ile 1 (en yavaş) — 10 (en hızlı) arasında ayarlayın. Her egzersiz için ayrı kaydedin veya sağ üstten tümünü birden kaydedin.
     </div>
-
-    <div class="kategori-baslik">🎯 Dikkat & Takip Egzersizleri</div>
+    <div class="kategori-baslik">🎯 Dikkat & Odak Egzersizleri</div>
     <div class="egzersiz-grid" id="grid-takip"></div>
-
     <div class="kategori-baslik">👁️ Göz Kası Egzersizleri</div>
     <div class="egzersiz-grid" id="grid-goz"></div>
   </div>
@@ -347,13 +322,15 @@ tr:hover td{background:#f8fafc}
 <script>
 const SUPABASE_URL = 'https://sfyjnwhblxldrzbrnyva.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmeWpud2hibHhsZHJ6YnJueXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDc4NTYsImV4cCI6MjA5NjMyMzg1Nn0.3mrQ2JSX4InY89iUnoJUCnWefxHXHjgM059PeLQedew';
-
 const GRUP_ADLARI = {1:'Grup 1 – 1-2. Sınıf',2:'Grup 2 – 3-4. Sınıf',3:'Grup 3 – 5-6. Sınıf',4:'Grup 4 – 7-8. Sınıf',5:'Grup 5 – Lise',6:'Grup 6 – Yetişkin'};
 
 const EGZERSIZLER = {
   takip: [
     { kod:'meteor-takibi', isim:'Meteor Takibi', ikon:'☄️', aciklama:'Ekranda hareket eden meteoru gözlerinizle takip edin. Smooth pursuit göz egzersizi.', url:'meteor-takibi.html' },
-    { kod:'ev-takibi', isim:'Ev Takibi', ikon:'🏠', aciklama:'Eve giren ve çıkan kişileri zihinsel olarak takip edin. Odak ve dikkat geliştirme.', url:'ev-takibi.html' }
+    { kod:'ev-takibi', isim:'Ev Takibi', ikon:'🏠', aciklama:'Eve giren ve çıkan kişileri zihinsel olarak takip edin. Odak ve dikkat geliştirme.', url:'ev-takibi.html' },
+    { kod:'sayi-avi', isim:'Sayı Avı', ikon:'🔢', aciklama:'Ekrandaki sayılar arasında hedef sayıyı bulup tıklayın. Görsel tarama egzersizi.', url:'sayi-avi.html' },
+    { kod:'merkez-nokta', isim:'Merkez Nokta', ikon:'👁️', aciklama:'Ortadaki noktaya bakarken çevresel görüşünüzle beliren sayı veya harfi seçin. Periferik görüş egzersizi.', url:'merkez-nokta.html' },
+    { kod:'gizli-nesne', isim:'Gizli Nesne', ikon:'🔭', aciklama:'Uzay sahnesinde gizlenmiş nesneleri bulun. Görsel tarama ve odak egzersizi.', url:'gizli-nesne.html' }
   ],
   goz: [
     { kod:'sag-sol', isim:'Sağ-Sol Takip', ikon:'↔️', aciklama:'Yatay düzlemde hareket eden noktayı gözlerinizle takip edin. Yatay göz kası egzersizi.', url:'goz-sag-sol.html' },
@@ -370,12 +347,7 @@ async function supabase(metod, tablo, veri, filtre) {
   if (filtre) url += '?' + filtre;
   const res = await fetch(url, {
     method: metod,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': metod === 'POST' ? 'return=representation' : ''
-    },
+    headers: {'apikey': SUPABASE_KEY,'Authorization': 'Bearer ' + SUPABASE_KEY,'Content-Type': 'application/json','Prefer': metod === 'POST' ? 'return=representation' : ''},
     body: veri ? JSON.stringify(veri) : undefined
   });
   if (!res.ok) { const h = await res.json(); throw new Error(h.message || 'Hata'); }
@@ -398,13 +370,7 @@ function modalKapat(tip) {
   if (tip === 'hikaye') { document.getElementById('h-baslik').value=''; document.getElementById('h-metin').value=''; document.getElementById('h-kelime').value=''; document.getElementById('kelime-sayac').textContent='0 kelime'; }
   if (tip === 'olcum') { document.getElementById('o-baslik').value=''; document.getElementById('o-metin').value=''; document.getElementById('o-kelime').value=''; document.getElementById('olcum-kelime-sayac').textContent='0 kelime'; }
 }
-
-function bildirimGoster(mesaj, tip) {
-  const el = document.getElementById('bildirim');
-  el.textContent = mesaj; el.className = 'bildirim ' + tip; el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 3000);
-}
-
+function bildirimGoster(mesaj, tip) { const el = document.getElementById('bildirim'); el.textContent = mesaj; el.className = 'bildirim ' + tip; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
 function kelimeSay() { const m=document.getElementById('h-metin').value.trim(); const s=m?m.split(/\s+/).length:0; document.getElementById('kelime-sayac').textContent=s+' kelime'; document.getElementById('h-kelime').value=s; }
 function olcumKelimeSay() { const m=document.getElementById('o-metin').value.trim(); const s=m?m.split(/\s+/).length:0; document.getElementById('olcum-kelime-sayac').textContent=s+' kelime'; document.getElementById('o-kelime').value=s; }
 function duzenleKelimeSay() { const m=document.getElementById('od-metin').value.trim(); const s=m?m.split(/\s+/).length:0; document.getElementById('duzenle-kelime-sayac').textContent=s+' kelime'; document.getElementById('od-kelime').value=s; }
@@ -420,13 +386,11 @@ async function hikayeKaydet() {
   catch(e) { bildirimGoster('❌ '+e.message,'hata'); }
   btn.textContent='💾 Kaydet';
 }
-
 async function hikayeSil(id) {
   if (!confirm('Bu hikâyeyi silmek istediğinize emin misiniz?')) return;
   try { await supabase('DELETE','hikayeler',null,'id=eq.'+id); bildirimGoster('🗑️ Hikâye silindi.','basari'); hikayeleriYukle(); }
   catch(e) { bildirimGoster('❌ '+e.message,'hata'); }
 }
-
 async function hikayeleriYukle() {
   const liste=document.getElementById('hikaye-liste');
   liste.innerHTML='<div class="bos-durum">⏳ Yükleniyor...</div>';
@@ -449,7 +413,6 @@ async function hikayeleriYukle() {
     });
   } catch(e) { liste.innerHTML='<div class="bos-durum">❌ '+e.message+'</div>'; }
 }
-
 async function olcumMetniKaydet() {
   const grup=document.getElementById('o-grup').value, baslik=document.getElementById('o-baslik').value.trim();
   const metin=document.getElementById('o-metin').value.trim(), kelime=document.getElementById('o-kelime').value;
@@ -460,20 +423,17 @@ async function olcumMetniKaydet() {
   catch(e) { bildirimGoster('❌ '+e.message,'hata'); }
   btn.textContent='💾 Kaydet';
 }
-
 async function olcumMetniSil(id) {
   if (!confirm('Bu metni silmek istediğinize emin misiniz?')) return;
   try { await supabase('DELETE','olcum_metinleri',null,'id=eq.'+id); bildirimGoster('🗑️ Metin silindi.','basari'); olcumMetinleriYukle(); }
   catch(e) { bildirimGoster('❌ '+e.message,'hata'); }
 }
-
 function olcumMetniDuzenle(id,grup,baslik,metin,kelime) {
   document.getElementById('od-id').value=id; document.getElementById('od-grup').value=grup;
   document.getElementById('od-baslik').value=baslik; document.getElementById('od-metin').value=metin;
   document.getElementById('od-kelime').value=kelime; document.getElementById('duzenle-kelime-sayac').textContent=kelime+' kelime';
   modalAc('olcum-duzenle');
 }
-
 async function olcumMetniGuncelle() {
   const id=document.getElementById('od-id').value, grup=document.getElementById('od-grup').value;
   const baslik=document.getElementById('od-baslik').value.trim(), metin=document.getElementById('od-metin').value.trim();
@@ -485,7 +445,6 @@ async function olcumMetniGuncelle() {
   catch(e) { bildirimGoster('❌ '+e.message,'hata'); }
   btn.textContent='💾 Güncelle';
 }
-
 async function olcumMetinleriYukle() {
   const liste=document.getElementById('olcum-liste');
   liste.innerHTML='<div class="bos-durum">⏳ Yükleniyor...</div>';
@@ -509,19 +468,14 @@ async function olcumMetinleriYukle() {
   } catch(e) { liste.innerHTML='<div class="bos-durum">❌ '+e.message+'</div>'; }
 }
 
-// ── EGZERSİZLER ──
 let egzersizHizlari = {};
-
 async function egzersizleriYukle() {
   try {
     const ayarlar = await supabase('GET','egzersiz_ayarlari',null,'order=egzersiz_kodu');
     ayarlar.forEach(a => { egzersizHizlari[a.egzersiz_kodu] = a.hiz; });
-  } catch(e) {
-    // Varsayılan hız 5
-  }
+  } catch(e) {}
   egzersizKartlariOlustur();
 }
-
 function egzersizKartlariOlustur() {
   ['takip','goz'].forEach(kategori => {
     const grid = document.getElementById('grid-' + kategori);
@@ -536,7 +490,7 @@ function egzersizKartlariOlustur() {
           <div class="egzersiz-ikon">${e.ikon}</div>
           <div>
             <div class="egzersiz-isim">${e.isim}</div>
-            <div class="egzersiz-kategori">${kategori === 'takip' ? 'Dikkat & Takip' : 'Göz Kası'}</div>
+            <div class="egzersiz-kategori">${kategori === 'takip' ? 'Dikkat & Odak' : 'Göz Kası'}</div>
           </div>
         </div>
         <div class="egzersiz-aciklama">${e.aciklama}</div>
@@ -554,7 +508,6 @@ function egzersizKartlariOlustur() {
     });
   });
 }
-
 async function hizKaydet(kod) {
   const hiz = parseInt(document.getElementById('slider-' + kod).value);
   const btn = document.getElementById('kaydbet-' + kod);
@@ -568,7 +521,6 @@ async function hizKaydet(kod) {
     bildirimGoster('✅ Hız kaydedildi!','basari');
   } catch(e) { bildirimGoster('❌ '+e.message,'hata'); btn.textContent='💾 Kaydet'; }
 }
-
 async function tumHizlariKaydet() {
   const tumEgzersizler = [...EGZERSIZLER.takip, ...EGZERSIZLER.goz];
   let basarili = 0;
@@ -584,12 +536,10 @@ async function tumHizlariKaydet() {
   }
   bildirimGoster('✅ '+basarili+' egzersiz hızı kaydedildi!','basari');
 }
-
 function egzersizBaslat(url, kod) {
   const hiz = document.getElementById('slider-' + kod).value;
   window.open(url + '?hiz=' + hiz, '_blank');
 }
-
 function ara(q) {
   document.querySelectorAll('#tablo-govde tr').forEach(r => {
     r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
