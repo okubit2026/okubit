@@ -13,52 +13,32 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
 .header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 12px;}
 .logo{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:3px;}
 .logo span{color:var(--white);}
-
 .screen{display:none;flex-direction:column;align-items:center;flex:1;}
 .screen.active{display:flex;}
-
-/* MENÜ */
 .game-title{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;text-align:center;margin:12px 0 4px;}
 .game-sub{color:var(--grey);font-size:0.8rem;letter-spacing:2px;text-align:center;margin-bottom:24px;}
 .menu-card{background:rgba(255,255,255,0.03);border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:20px;width:100%;max-width:500px;margin-bottom:14px;}
 .menu-card h3{font-family:'Orbitron',sans-serif;font-size:0.68rem;color:var(--accent);letter-spacing:2px;margin-bottom:14px;opacity:0.8;}
-
-/* HIZ SLIDER */
 .hiz-wrap{display:flex;align-items:center;gap:12px;}
 .hiz-slider{flex:1;-webkit-appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,0.1);outline:none;}
 .hiz-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(0,212,255,0.5);}
 .hiz-deger{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);min-width:28px;text-align:center;}
-
-/* SÜRE */
 .sure-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .sure-btn{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:10px;cursor:pointer;text-align:center;color:var(--grey);font-size:0.85rem;}
 .sure-btn.sel{background:rgba(0,212,255,0.15);border-color:var(--accent);color:var(--white);}
-
 .start-btn{width:100%;max-width:500px;padding:16px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:14px;color:var(--bg);font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:8px;}
 .geri-btn{margin-top:10px;color:rgba(106,138,170,0.8);font-size:0.8rem;text-decoration:none;display:block;text-align:center;padding:8px;background:none;border:none;cursor:pointer;font-family:'Nunito',sans-serif;}
-
-/* EGZERSIZ */
 .egzersiz-hud{display:flex;justify-content:space-between;align-items:center;width:100%;padding:10px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;margin-bottom:16px;}
 .hud-item{text-align:center;}
 .hud-lbl{font-size:0.6rem;color:var(--grey);letter-spacing:1px;text-transform:uppercase;}
 .hud-val{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);margin-top:2px;}
-
 .alan{width:100%;max-width:700px;height:300px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:20px;position:relative;overflow:hidden;margin-bottom:16px;}
-
-/* Kılavuz çizgisi */
 .kilavuz{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,212,255,0.08);}
-
-/* Nokta */
 .nokta{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--accent);top:50%;transform:translate(-50%,-50%);box-shadow:0 0 20px rgba(0,212,255,0.8),0 0 40px rgba(0,212,255,0.4);transition:none;}
-.nokta-iz{position:absolute;width:8px;height:8px;border-radius:50%;background:rgba(0,212,255,0.2);transform:translate(-50%,-50%);pointer-events:none;}
-
 .sure-bar-wrap{width:100%;max-width:700px;margin-bottom:8px;}
 .sure-bar{width:100%;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
 .sure-bar-ic{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:3px;transition:width 1s linear;}
-
 .mesaj{font-family:'Orbitron',sans-serif;font-size:0.8rem;color:var(--grey);letter-spacing:2px;text-align:center;margin-bottom:8px;min-height:20px;}
-
-/* BİTTİ */
 .bitti-kart{width:100%;max-width:440px;background:rgba(255,255,255,0.03);border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:28px 24px;text-align:center;margin:16px 0;}
 .bitti-icon{font-size:3rem;display:block;margin-bottom:10px;}
 .bitti-baslik{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:var(--green);margin-bottom:8px;}
@@ -108,7 +88,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
     </div>
 
     <button class="start-btn" onclick="baslat()">BAŞLAT ▶</button>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn" href="#" class="geri-btn">← Panele Dön</a>
   </div>
 
   <!-- EGZERSİZ -->
@@ -144,11 +124,19 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
         <button class="btn-back" onclick="menuye()">MENÜ</button>
       </div>
     </div>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn2" href="#" class="geri-btn">← Panele Dön</a>
   </div>
 </div>
 
 <script>
+// ── PANELe DÖNÜŞ URL'İ ──
+(function() {
+  const from = new URLSearchParams(window.location.search).get('from');
+  const backUrl = from === 'admin' ? 'admin.html' : 'ogrenci-panel.html';
+  document.getElementById('backBtn').href = backUrl;
+  document.getElementById('backBtn2').href = backUrl;
+})();
+
 let G = {hiz:3, sure:60, animId:null, sureInt:null, baslangic:0, x:0, yon:1};
 
 function selSure(s, el){
@@ -165,15 +153,11 @@ function showScreen(id){
 function baslat(){
   G.hiz = parseInt(document.getElementById('hizSlider').value);
   G.baslangic = Date.now();
-  G.x = 10; // % olarak başlangıç
+  G.x = 10;
   G.yon = 1;
-
   document.getElementById('hudHiz').textContent = G.hiz + '/10';
   document.getElementById('hudSure').textContent = G.sure + 'sn';
-
   showScreen('screenEgzersiz');
-
-  // Süre sayacı
   if(G.sureInt) clearInterval(G.sureInt);
   G.sureInt = setInterval(()=>{
     const kalan = Math.max(0, G.sure - Math.floor((Date.now()-G.baslangic)/1000));
@@ -181,15 +165,12 @@ function baslat(){
     document.getElementById('sureIc').style.width = (kalan/G.sure*100) + '%';
     if(kalan <= 0){ clearInterval(G.sureInt); cancelAnimationFrame(G.animId); bitti(); }
   }, 500);
-
-  // Animasyon
   animasyonBaslat();
 }
 
 function animasyonBaslat(){
   const nokta = document.getElementById('nokta');
-  const hizFaktoru = G.hiz * 0.15; // hız 1-10 → 0.15-1.5 px/frame
-
+  const hizFaktoru = G.hiz * 0.15;
   function animate(){
     G.x += G.yon * hizFaktoru;
     if(G.x >= 90){ G.x = 90; G.yon = -1; }
@@ -206,12 +187,7 @@ function bitti(){
   showScreen('screenBitti');
 }
 
-function durdur(){
-  clearInterval(G.sureInt);
-  cancelAnimationFrame(G.animId);
-  menuye();
-}
-
+function durdur(){ clearInterval(G.sureInt); cancelAnimationFrame(G.animId); menuye(); }
 function tekrar(){ baslat(); }
 function menuye(){ clearInterval(G.sureInt); cancelAnimationFrame(G.animId); showScreen('screenMenu'); }
 
