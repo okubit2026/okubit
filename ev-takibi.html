@@ -142,7 +142,7 @@
       </div>
     </div>
     <button class="start-btn" onclick="startGame()">OYUNU BAŞLAT ▶</button>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn" href="#" class="geri-btn">← Panele Dön</a>
   </div>
 
   <!-- OYUN -->
@@ -252,7 +252,7 @@
         <button class="btn-menu" onclick="goMenu()">MENÜ</button>
       </div>
     </div>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn2" href="#" class="geri-btn">← Panele Dön</a>
   </div>
 </div>
 
@@ -261,6 +261,14 @@
 </style>
 
 <script>
+// ── PANELe DÖNÜŞ URL'İ ──
+(function() {
+  const from = new URLSearchParams(window.location.search).get('from');
+  const backUrl = from === 'admin' ? 'admin.html' : 'ogrenci-panel.html';
+  document.getElementById('backBtn').href = backUrl;
+  document.getElementById('backBtn2').href = backUrl;
+})();
+
 const S = { level:1, mod:1, answerMode:'choice', score:0, streak:0, correct:0, wrong:0, steps:[], currentStep:0, answer:0, answerL:0, answerR:0, startTime:0 };
 const LEVEL_CONFIG = { 1:{minSteps:3,maxSteps:5,maxPeople:2,animMs:2000}, 2:{minSteps:5,maxSteps:8,maxPeople:3,animMs:1500}, 3:{minSteps:8,maxSteps:12,maxPeople:5,animMs:1000}, 4:{minSteps:12,maxSteps:20,maxPeople:7,animMs:500} };
 
