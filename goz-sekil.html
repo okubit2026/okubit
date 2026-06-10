@@ -53,6 +53,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
 <body>
 <div id="app">
   <div class="header"><div class="logo">OKU<span>BİT</span></div></div>
+
+  <!-- MENÜ -->
   <div id="screenMenu" class="screen">
     <div style="font-size:2.2rem;margin-top:8px;margin-bottom:4px">🔷</div>
     <div class="game-title">ŞEKİL TAKİBİ</div>
@@ -84,8 +86,10 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
       </div>
     </div>
     <button class="start-btn" onclick="baslat()">BAŞLAT ▶</button>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn" href="#" class="geri-btn">← Panele Dön</a>
   </div>
+
+  <!-- EGZERSİZ -->
   <div id="screenEgzersiz" class="screen">
     <div class="egzersiz-hud">
       <div class="hud-item"><div class="hud-lbl">Şekil</div><div class="hud-val" id="hudSekil">—</div></div>
@@ -99,6 +103,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
     </div>
     <button class="geri-btn" onclick="durdur()">⏹ Durdur</button>
   </div>
+
+  <!-- BİTTİ -->
   <div id="screenBitti" class="screen">
     <div class="bitti-kart">
       <span class="bitti-icon">✅</span>
@@ -109,10 +115,19 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
         <button class="btn-back" onclick="menuye()">MENÜ</button>
       </div>
     </div>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn2" href="#" class="geri-btn">← Panele Dön</a>
   </div>
 </div>
+
 <script>
+// ── PANELe DÖNÜŞ URL'İ ──
+(function() {
+  const from = new URLSearchParams(window.location.search).get('from');
+  const backUrl = from === 'admin' ? 'admin.html' : 'ogrenci-panel.html';
+  document.getElementById('backBtn').href = backUrl;
+  document.getElementById('backBtn2').href = backUrl;
+})();
+
 let G={hiz:3,sure:60,sekil:'daire',animId:null,sureInt:null,baslangic:0,t:0};
 const SEKIL_ISIM={daire:'Daire',kare:'Kare',sekiz:'Sekiz (∞)',ucgen:'Üçgen',elips:'Elips',zigzag:'Zigzag'};
 
