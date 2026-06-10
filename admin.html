@@ -538,7 +538,7 @@ async function tumHizlariKaydet() {
 }
 function egzersizBaslat(url, kod) {
   const hiz = document.getElementById('slider-' + kod).value;
-  window.open(url + '?hiz=' + hiz, '_blank');
+  window.open(url + '?hiz=' + hiz + '&from=admin', '_blank');
 }
 function ara(q) {
   document.querySelectorAll('#tablo-govde tr').forEach(r => {
