@@ -49,6 +49,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
 <body>
 <div id="app">
   <div class="header"><div class="logo">OKU<span>BİT</span></div></div>
+
+  <!-- MENÜ -->
   <div id="screenMenu" class="screen">
     <div style="font-size:2.2rem;margin-top:8px;margin-bottom:4px">🕰️</div>
     <div class="game-title">SARKAÇ TAKİBİ</div>
@@ -78,8 +80,10 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
       </div>
     </div>
     <button class="start-btn" onclick="baslat()">BAŞLAT ▶</button>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn" href="#" class="geri-btn">← Panele Dön</a>
   </div>
+
+  <!-- EGZERSİZ -->
   <div id="screenEgzersiz" class="screen">
     <div class="egzersiz-hud">
       <div class="hud-item"><div class="hud-lbl">Egzersiz</div><div class="hud-val">Sarkaç</div></div>
@@ -93,6 +97,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
     </div>
     <button class="geri-btn" onclick="durdur()">⏹ Durdur</button>
   </div>
+
+  <!-- BİTTİ -->
   <div id="screenBitti" class="screen">
     <div class="bitti-kart">
       <span class="bitti-icon">✅</span>
@@ -103,10 +109,19 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--white);min
         <button class="btn-back" onclick="menuye()">MENÜ</button>
       </div>
     </div>
-    <a href="panel.html" class="geri-btn">← Panele Dön</a>
+    <a id="backBtn2" href="#" class="geri-btn">← Panele Dön</a>
   </div>
 </div>
+
 <script>
+// ── PANELe DÖNÜŞ URL'İ ──
+(function() {
+  const from = new URLSearchParams(window.location.search).get('from');
+  const backUrl = from === 'admin' ? 'admin.html' : 'ogrenci-panel.html';
+  document.getElementById('backBtn').href = backUrl;
+  document.getElementById('backBtn2').href = backUrl;
+})();
+
 let G={hiz:3,sure:60,animId:null,sureInt:null,baslangic:0,t:0};
 function selSure(s,el){G.sure=s;document.querySelectorAll('.sure-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.style.display='none');document.getElementById(id).style.display='flex';}
@@ -130,16 +145,14 @@ function baslat(){
   },500);
   const nokta=document.getElementById('nokta');
   const hf=G.hiz*0.008;
-  const maxAci=Math.PI/3; // 60 derece
+  const maxAci=Math.PI/3;
   function animate(){
     G.t+=hf;
-    // Sarkaç hareketi - sin ile doğal yavaşlama
     const aci=maxAci*Math.sin(G.t);
     const noktaX=W/2+Math.sin(aci)*ipUzunluk;
     const noktaY=Math.cos(aci)*ipUzunluk;
     nokta.style.left=noktaX+'px';
     nokta.style.top=noktaY+'px';
-    // İpi güncelle
     ip.style.transform=`rotate(${aci}rad)`;
     G.animId=requestAnimationFrame(animate);
   }
