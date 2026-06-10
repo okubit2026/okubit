@@ -603,7 +603,27 @@ async function dersMetniGuncelle() {
   if (!metin) { bildirimGoster('⚠️ Metin boş olamaz!','hata'); return; }
   const btn=document.getElementById('btn-ders-guncelle'); btn.textContent='⏳ Güncelleniyor...';
   try {
-    await supabase('PATCH','ders_metinleri',{zorluk, baslik, metin, kelime_sayisi:parseInt(kelime)||0},'id=eq.'+id);
+    async function dersMetniGuncelle() {
+  const id=document.getElementById('dd-id').value;
+  const zorluk=document.getElementById('dd-zorluk').value;
+  const baslik=document.getElementById('dd-baslik').value.trim();
+  const metin=document.getElementById('dd-metin').value.trim();
+  const kelime=document.getElementById('dd-kelime').value;
+  if (!baslik) { bildirimGoster('⚠️ Başlık boş olamaz!','hata'); return; }
+  if (!metin) { bildirimGoster('⚠️ Metin boş olamaz!','hata'); return; }
+  const btn=document.getElementById('btn-ders-guncelle'); btn.textContent='⏳ Güncelleniyor...';
+  try {
+    const res = await fetch(SUPABASE_URL+'/rest/v1/ders_metinleri?id=eq.'+id, {
+      method:'PATCH',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({zorluk,baslik,metin,kelime_sayisi:parseInt(kelime)||0})
+    });
+    if(!res.ok) throw new Error('Güncelleme başarısız');
+    bildirimGoster('✅ Metin güncellendi!','basari');
+    modalKapat('ders-duzenle');
+    dersMetinleriYukle();
+  } catch(e) { bildirimGoster('❌ '+e.message,'hata'); }
+  btn.textContent='💾 Güncelle';
     bildirimGoster('✅ Metin güncellendi!','basari');
     modalKapat('ders-duzenle');
     dersMetinleriYukle();
