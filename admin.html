@@ -432,7 +432,7 @@ async function supabase(metod, tablo, veri, filtre) {
   if (filtre) url += '?' + filtre;
   const res = await fetch(url, {
     method: metod,
-    headers: {'apikey': SUPABASE_KEY,'Authorization': 'Bearer ' + SUPABASE_KEY,'Content-Type': 'application/json','Prefer': metod === 'POST' ? 'return=representation' : ''},
+    headers: {'apikey': SUPABASE_KEY,'Authorization': 'Bearer ' + SUPABASE_KEY,'Content-Type': 'application/json','Prefer': (metod === 'POST' || metod === 'PATCH') ? 'return=representation' : ''},
     body: veri ? JSON.stringify(veri) : undefined
   });
   if (!res.ok) { const h = await res.json(); throw new Error(h.message || 'Hata'); }
