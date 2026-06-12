@@ -213,8 +213,12 @@ let tamamlananIdx=-1; // en son tamamlanan görevin indeksi
 
 // ── GİRİŞ KONTROL ──
 async function panelYukle(){
-  // Session'dan kullanıcı al
-  const kullanici=sessionStorage.getItem('okubit_kullanici');
+  // localStorage'dan kullanıcı al (giriş sayfası bunu yazıyor)
+  const kullaniciObj=localStorage.getItem('okubit_kullanici_obj');
+  if(!kullaniciObj){location.href='giris.html';return;}
+
+  let kullanici;
+  try{ kullanici = JSON.parse(kullaniciObj).kullanici_adi; }catch(e){location.href='giris.html';return;}
   if(!kullanici){location.href='giris.html';return;}
 
   try{
@@ -298,9 +302,9 @@ async function programiYukle(){
     }
 
     mevcutGorevler=data[0].gorevler;
-    // Tamamlananları session'dan al
-    const keyTamamlanan='tamamlanan_'+ogrenci.kullanici_adi+'_'+asama+'_'+gun;
-    tamamlananIdx=parseInt(sessionStorage.getItem(keyTamamlanan)||'-1');
+    // Tamamlananları localStorage'dan al (sekmeler arası paylaşım için)
+    const keyTamamlanan='okubit_tamamlanan_'+ogrenci.kullanici_adi+'_'+asama+'_'+gun;
+    tamamlananIdx=parseInt(localStorage.getItem(keyTamamlanan)||'-1');
     gorevListesiOlustur();
 
   }catch(e){
@@ -387,11 +391,11 @@ function kontrolEtTamamlandi(){
     const gun=ogrenci.mevcut_gun||1;
     if(b.kullanici===ogrenci.kullanici_adi && b.asama===asama && b.gun===gun && b.tamamlandiMi===true){
       // Görevi tamamlandı yap
-      const key='tamamlanan_'+ogrenci.kullanici_adi+'_'+asama+'_'+gun;
-      const oncekiIdx=parseInt(sessionStorage.getItem(key)||'-1');
+      const key='okubit_tamamlanan_'+ogrenci.kullanici_adi+'_'+asama+'_'+gun;
+      const oncekiIdx=parseInt(localStorage.getItem(key)||'-1');
       if(b.idx>oncekiIdx){
         tamamlananIdx=b.idx;
-        sessionStorage.setItem(key,tamamlananIdx);
+        localStorage.setItem(key,tamamlananIdx);
         gorevListesiOlustur();
         // Enerji güncelle (egzersiz başarı durumuna göre puan localStorage'dan okunabilir)
         const kazanilanPuan=b.puan||10;
@@ -439,6 +443,7 @@ async function siralamaYukle(){
 }
 
 function cikisYap(){
+  localStorage.removeItem('okubit_kullanici_obj');
   sessionStorage.removeItem('okubit_kullanici');
   location.href='giris.html';
 }
