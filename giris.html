@@ -26,7 +26,7 @@ input:focus{border-color:#2563a8}
 </head>
 <body>
 <div class="giris-kutu">
-  <div class="rozet-wrap"><div class="rozet">🎓 Öğrenci Girişi</div></div>
+  <div class="rozet-wrap"><div class="rozet">🎓 Giriş</div></div>
   <div class="logo">Oku<span>Bit</span></div>
   <div class="altyazi">Hesabına giriş yap ve çalışmana devam et</div>
   <div class="hata" id="hata"></div>
@@ -39,6 +39,9 @@ input:focus{border-color:#2563a8}
   <a href="index.html" class="geri">← Ana sayfaya dön</a>
 </div>
 <script>
+const SUPABASE_URL='https://sfyjnwhblxldrzbrnyva.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmeWpud2hibHhsZHJ6YnJueXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDc4NTYsImV4cCI6MjA5NjMyMzg1Nn0.3mrQ2JSX4InY89iUnoJUCnWefxHXHjgM059PeLQedew';
+
 async function girisYap(){
   var k=document.getElementById('kullanici').value.trim();
   var s=document.getElementById('sifre').value.trim();
@@ -50,19 +53,21 @@ async function girisYap(){
   if(!k||!s){hata.innerText='Lütfen tüm alanları doldurun.';hata.style.display='block';return;}
   btn.disabled=true;btn.innerText='Kontrol ediliyor...';
   try{
-    var url='https://sfyjnwhblxldrzbrnyva.supabase.co/rest/v1/kullanicilar?kullanici_adi=eq.'+encodeURIComponent(k)+'&aktif=eq.true&select=*';
-    var r=await fetch(url,{headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmeWpud2hibHhsZHJ6YnJueXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDc4NTYsImV4cCI6MjA5NjMyMzg1Nn0.3mrQ2JSX4InY89iUnoJUCnWefxHXHjgM059PeLQedew','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmeWpud2hibHhsZHJ6YnJueXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDc4NTYsImV4cCI6MjA5NjMyMzg1Nn0.3mrQ2JSX4InY89iUnoJUCnWefxHXHjgM059PeLQedew'}});
+    var url=SUPABASE_URL+'/rest/v1/kullanicilar?kullanici_adi=eq.'+encodeURIComponent(k)+'&aktif=eq.true&select=*';
+    var r=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
     var d=await r.json();
     if(d&&d.length>0&&d[0].sifre===s){
       var u=d[0];
-      localStorage.setItem('okubit_kullanici',JSON.stringify(u));
+      // Hem sessionStorage hem localStorage'a yaz (oturum + hatırlama)
+      sessionStorage.setItem('okubit_kullanici',u.kullanici_adi);
+      localStorage.setItem('okubit_kullanici_obj',JSON.stringify(u));
       basari.innerText='Giriş başarılı! Yönlendiriliyorsunuz...';
       basari.style.display='block';
       setTimeout(function(){
         if(u.rol==='admin')window.location.href='admin.html';
         else if(u.rol==='ogretmen')window.location.href='ogretmen.html';
-        else window.location.href='panel.html';
-      },1000);
+        else window.location.href='ogrenci-panel.html';
+      },800);
     }else{
       hata.innerText='Kullanıcı adı veya şifre hatalı.';
       hata.style.display='block';
