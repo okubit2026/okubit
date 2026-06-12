@@ -328,8 +328,8 @@ function gorevListesiOlustur(){
     } else if(aktif){
       const url=gorevUrl(g);
       div.className='gorev aktif';
-      div.innerHTML=`<div class="gorev-ikon">▶️</div><div class="gorev-bilgi"><div class="gorev-isim">${isim}</div><div class="gorev-sure">${TIP_AD[g.tip]||''} · ${g.sure} dk</div></div><span class="gorev-sure-badge">Sıradaki</span>`;
-      div.onclick=()=>gorevBaslat(i,url);
+      div.innerHTML=`<div class="gorev-ikon">▶️</div><div class="gorev-bilgi"><div class="gorev-isim">${isim}</div><div class="gorev-sure">${TIP_AD[g.tip]||''} · ${g.sure} dk</div></div><span class="gorev-sure-badge">Başlat →</span>`;
+      div.onclick=()=>gorevAc(i,url);
     } else {
       div.className='gorev kilitli';
       div.innerHTML=`<div class="gorev-ikon">🔒</div><div class="gorev-bilgi"><div class="gorev-isim">${isim}</div><div class="gorev-sure">${TIP_AD[g.tip]||''} · ${g.sure} dk</div></div>`;
@@ -348,7 +348,7 @@ function gorevListesiOlustur(){
     const g=mevcutGorevler[aktifIdx];
     const isim=g.tip==='asama1'?(MODUL_AD[g.modul]||g.modul):g.isim;
     const url=gorevUrl(g);
-    baslaDiv.innerHTML=`<a href="${url}" class="basla-btn" onclick="gorevBaslat(${aktifIdx},'${url}')">▶️ ${isim}</a>`;
+    baslaDiv.innerHTML=`<a href="${url}" target="_blank" class="basla-btn" onclick="gorevAc(${aktifIdx},'${url}')">▶️ ${isim} — Başlat</a>`;
   }
 }
 
@@ -357,14 +357,62 @@ function gorevUrl(g){
   return (g.dosya||'#')+'?from=ogrenci';
 }
 
-function gorevBaslat(idx,url){
-  // Görevi tamamlandı olarak işaretle
+function gorevAc(idx,url){
+  // Hedef görevin anahtarını localStorage'a yaz, egzersiz bittiğinde bu key işaretlenecek
   const asama=ogrenci.asama||1;
   const gun=ogrenci.mevcut_gun||1;
-  const key='tamamlanan_'+ogrenci.kullanici_adi+'_'+asama+'_'+gun;
-  sessionStorage.setItem(key,idx);
-  tamamlananIdx=idx;
-  gorevListesiOlustur();
+  const bekleyenKey='okubit_bekleyen_gorev';
+  localStorage.setItem(bekleyenKey, JSON.stringify({
+    kullanici: ogrenci.kullanici_adi,
+    asama, gun, idx,
+    tamamlandiMi: false
+  }));
+  // Sekme açılır, kullanıcı dönünce kontrol edilecek
+}
+
+// Sayfa odaklandığında (egzersiz sekmesinden geri dönünce) kontrol et
+window.addEventListener('focus', kontrolEtTamamlandi);
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden) kontrolEtTamamlandi();
+});
+
+function kontrolEtTamamlandi(){
+  if(!ogrenci) return;
+  const bekleyenKey='okubit_bekleyen_gorev';
+  const veri=localStorage.getItem(bekleyenKey);
+  if(!veri) return;
+  try{
+    const b=JSON.parse(veri);
+    const asama=ogrenci.asama||1;
+    const gun=ogrenci.mevcut_gun||1;
+    if(b.kullanici===ogrenci.kullanici_adi && b.asama===asama && b.gun===gun && b.tamamlandiMi===true){
+      // Görevi tamamlandı yap
+      const key='tamamlanan_'+ogrenci.kullanici_adi+'_'+asama+'_'+gun;
+      const oncekiIdx=parseInt(sessionStorage.getItem(key)||'-1');
+      if(b.idx>oncekiIdx){
+        tamamlananIdx=b.idx;
+        sessionStorage.setItem(key,tamamlananIdx);
+        gorevListesiOlustur();
+        // Enerji güncelle (egzersiz başarı durumuna göre puan localStorage'dan okunabilir)
+        const kazanilanPuan=b.puan||10;
+        enerjiGuncelle(kazanilanPuan);
+      }
+      localStorage.removeItem(bekleyenKey);
+    }
+  }catch(e){}
+}
+
+async function enerjiGuncelle(puan){
+  const yeniEnerji=(ogrenci.enerji||0)+puan;
+  ogrenci.enerji=yeniEnerji;
+  document.getElementById('bilgiEnerji').textContent='⚡ '+yeniEnerji;
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/kullanicilar?kullanici_adi=eq.'+encodeURIComponent(ogrenci.kullanici_adi),{
+      method:'PATCH',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({enerji:yeniEnerji})
+    });
+  }catch(e){}
 }
 
 // ── SIRALAMA YÜKLE ──
